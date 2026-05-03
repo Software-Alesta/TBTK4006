@@ -29,21 +29,33 @@
         .input-section { 
             height: 100vh; display: flex; flex-direction: column; justify-content: center; 
             align-items: center; border-right: 1px solid rgba(255,255,255,0.1); 
-            position: fixed; width: 40%; background: linear-gradient(to bottom, #050508, #0a0a15);
-        }
-        .back-link {
-            position: absolute; top: 30px; left: 30px; color: #666;
-            text-decoration: none; font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem; transition: 0.3s; border-bottom: 1px solid transparent;
-        }
-        .back-link:hover { color: var(--main-cyan); border-bottom: 1px solid var(--main-cyan); }
-
-        .number-input { 
-            background: transparent; border: 2px solid var(--main-cyan); border-radius: 15px; 
-            color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; 
-            text-align: center; width: 80%; padding: 25px; transition: 0.4s;
+            position: fixed; width: 40%; background: linear-gradient(135deg, #050508 0%, #0a0a15 100%);
         }
         
+        /* Geliştirilmiş Geri Dön Butonu */
+        .back-link {
+            position: absolute; top: 40px; left: 40px; 
+            color: #fff; text-decoration: none; font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; transition: 0.4s; padding: 10px 20px;
+            border: 1px solid var(--main-cyan); border-radius: 50px;
+            background: rgba(0, 229, 255, 0.05); box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+        }
+        .back-link:hover { 
+            background: var(--main-cyan); color: #000; 
+            box-shadow: 0 0 30px var(--main-cyan); transform: scale(1.05);
+        }
+
+        .number-input { 
+            background: rgba(0,0,0,0.4); border: 2px solid var(--main-cyan); border-radius: 15px; 
+            color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; 
+            text-align: center; width: 80%; padding: 25px; transition: 0.4s;
+            appearance: textfield; /* Spinnerları kaldırır */
+        }
+        
+        /* Spin tuşlarını tamamen kapatma */
+        .number-input::-webkit-outer-spin-button,
+        .number-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
         .analyze-btn {
             display: none; margin-top: 25px; padding: 15px 45px;
             background: var(--main-cyan); color: #000; border: none;
@@ -75,16 +87,20 @@
     <!-- Başlangıç Efekti -->
     <div id="loader">
         <div class="loader-circle"></div>
-        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 220px;">SİSTEM BAŞLATILIYOR</h4>
+        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 220px;">ALIŞTIRMA MODU BAŞLATILIYOR</h4>
     </div>
 
     <div class="input-section">
-        <a href="index.html" class="back-link"><i class="fas fa-chevron-left me-2"></i> SAYILAR DİYARINA DÖN</a>
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left me-2"></i> SAYILAR DİYARINA DÖN</a>
         
-        <h2 class="neon-title mb-4" style="color: var(--main-cyan);">VERİ ANALİZİ</h2>
-        <input type="number" id="numInput" class="number-input" placeholder="---" oninput="handleInput()">
+        <h2 class="neon-title mb-4" style="color: var(--main-cyan);">SAYI ANALİZİ</h2>
         
-        <p id="helperText" class="text-secondary mt-4">Analiz edilecek değeri sisteme girin...</p>
+        <!-- Sadece rakam girişini kabul eden, sembolleri engelleyen input -->
+        <input type="number" id="numInput" class="number-input" placeholder="---" 
+               oninput="handleInput()" 
+               onkeydown="return event.keyCode !== 190 && event.keyCode !== 110 && event.keyCode !== 188 && event.keyCode !== 107 && event.keyCode !== 109">
+        
+        <p id="helperText" class="text-secondary mt-4">Analiz edilecek bir tam sayı girin...</p>
         <button id="testBtn" class="analyze-btn" onclick="analyzeNumber()">ANALİZ ET <i class="fas fa-bolt ms-2"></i></button>
     </div>
 
@@ -118,7 +134,7 @@
         <div id="card-none" class="result-card type-error" data-aos="zoom-in">
             <h2 class="neon-title" style="color: var(--error-red);">SONUÇ BULUNAMADI</h2>
             <span class="sub-text">Sınıflandırma Dışı Değer</span>
-            <p>Girilen sayı, veri tabanımızdaki özel sayı kategorilerinden (Asal, Armstrong, Mükemmel, Palindrom) hiçbirine uymamaktadır.</p>
+            <p>Girilen sayı, veri tabanımızdaki özel sayı kategorilerinden hiçbirine uymamaktadır.</p>
         </div>
     </div>
 
@@ -134,27 +150,32 @@
             }, 1200);
         }
 
+        // Sembol ve ondalık girişini engelleme (Input bazlı koruma)
         function handleInput() {
-            const val = document.getElementById('numInput').value;
+            const input = document.getElementById('numInput');
             const btn = document.getElementById('testBtn');
             const helper = document.getElementById('helperText');
 
-            if (val !== "") {
+            // Eğer girilen değer tam sayı değilse (nokta/virgül içerme durumu) temizle
+            if (input.value.includes('.') || input.value.includes(',')) {
+                input.value = input.value.replace(/[.,]/g, "");
+            }
+
+            if (input.value !== "") {
                 helper.style.display = 'none';
                 btn.style.display = 'block';
             } else {
                 helper.style.display = 'block';
                 btn.style.display = 'none';
             }
-            // Sayı kutusu her değiştiğinde sağ tarafı temizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
         }
 
         function analyzeNumber() {
-            const num = parseInt(document.getElementById('numInput').value);
+            const numVal = document.getElementById('numInput').value;
+            const num = parseInt(numVal);
             let found = false;
 
-            // Önceki sonuçları temizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
 
             if (isPrime(num)) { showCard('card-asal'); found = true; }
@@ -162,10 +183,7 @@
             if (isPerfect(num)) { showCard('card-mukemmel'); found = true; }
             if (isPalindrome(num)) { showCard('card-palindrom'); found = true; }
 
-            // Hiçbiri değilse hata kartını göster
-            if (!found) {
-                showCard('card-none');
-            }
+            if (!found) { showCard('card-none'); }
         }
 
         function showCard(id) {
@@ -175,7 +193,7 @@
             setTimeout(() => card.classList.add('aos-animate'), 50);
         }
 
-        // Matematiksel Algoritmalar
+        // Matematik Motoru
         const isPrime = n => {
             if (n < 2) return false;
             for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
@@ -183,6 +201,7 @@
         };
 
         const isArmstrong = n => {
+            if (n < 0) return false;
             let s = n.toString(), l = s.length, sum = 0;
             for (let c of s) sum += Math.pow(parseInt(c), l);
             return sum === n;
