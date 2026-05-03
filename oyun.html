@@ -41,10 +41,10 @@
 
         /* MOBİL UYUMLULUK */
         @media (max-width: 768px) {
-            .number-log { position: relative; right: auto; top: auto; width: 100%; height: 35vh; margin-top: 20px; padding-right: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px;}
+            #gameArea { justify-content: flex-start !important; padding-top: 30px; } /* Mobilde üst üste binmeyi engeller */
+            .number-log { position: relative; right: auto; top: auto; width: 100%; height: 45vh; margin-top: 20px; padding-right: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px;}
             .game-input { width: 90%; font-size: 2.5rem; }
-            #gameArea { justify-content: flex-start; padding-top: 50px; }
-            .final-list { max-height: 200px; }
+            .final-list { max-height: 40vh; }
             .d-flex.gap-3 { flex-direction: column; }
             #resultScreen h1 { font-size: 2.5rem !important; }
             #countdown { font-size: 5rem !important; }
@@ -56,7 +56,7 @@
 
     <div id="pageLoader"><h1 class="neon-title" style="font-size: 3rem; text-align:center;">ARENA YÜKLENİYOR...</h1></div>
 
-    <!-- İsim Giriş Paneli (Oyun Buradan Başlıyor) -->
+    <!-- İsim Giriş Paneli -->
     <div id="nicknamePanel" class="text-center px-3">
         <h2 class="neon-title mb-4">TAKMA ADINI GİR VE BAŞLA</h2>
         <input type="text" id="nickInput" class="game-input fs-2" placeholder="Oyuncu Adı..." maxlength="12">
@@ -114,7 +114,6 @@
             
             if(!name) { warn.innerText = "LÜTFEN BİR İSİM GİRİN!"; return; }
 
-            // İsim Kullanılmış mı kontrolü (LocalStorage üzerinden)
             let lb = JSON.parse(localStorage.getItem('leaderboard')) || [];
             if(lb.some(user => user.name.toLowerCase() === name.toLowerCase())) {
                 warn.innerText = "BU İSİM ZATEN ALINMIŞ!";
@@ -216,8 +215,10 @@
             const list = document.getElementById('finalList');
             entries.forEach(e => {
                 const colorClass = e.p === 0 ? 'text-danger' : 'text-info';
-                list.innerHTML += `<div class="p-2 border-bottom border-secondary text-start">
-                    Sayı: <b>${e.n}</b> | <small>${e.type}</small> <span class="float-end ${colorClass}">${e.p === 0 ? '0' : '+' + e.p} Puan</span>
+                // Puanların alt satıra düşmemesi için flex yapısı eklendi
+                list.innerHTML += `<div class="d-flex justify-content-between align-items-center p-2 border-bottom border-secondary text-start">
+                    <div>Sayı: <b>${e.n}</b> <br><small class="text-secondary">${e.type}</small></div>
+                    <span class="${colorClass} text-nowrap fw-bold">${e.p === 0 ? '0' : '+' + e.p} Puan</span>
                 </div>`;
             });
             let lb = JSON.parse(localStorage.getItem('leaderboard')) || [];
