@@ -137,6 +137,14 @@
             background: var(--neon-pink);
             box-shadow: 0 0 30px var(--neon-pink);
         }
+
+        /* MOBİL UYUMLULUK */
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 2.5rem; }
+            .practice-box, .game-cta { padding: 40px 20px; }
+            .game-cta h1 { font-size: 2.5rem !important; }
+            .game-cta::before { font-size: 10rem; right: -20px; bottom: -20px; }
+        }
     </style>
 </head>
 <body>
@@ -145,7 +153,7 @@
     <header class="hero-section">
         <div class="container" data-aos="zoom-in">
             <h1 class="neon-text display-2 fw-bold mb-4">Python ile<br>Sayıların Gizemli Dünyası</h1>
-            <p class="lead fs-4 text-light w-75 mx-auto mb-5">Matematiğin derinliklerinde yatan sırları açığa çıkarın.</p>
+            <p class="lead fs-4 text-light w-75 mx-auto mb-5" style="width: 100% !important;">Matematiğin derinliklerinde yatan sırları açığa çıkarın.</p>
             <a href="#diyar" class="btn-neon">Keşfe Başla <i class="fas fa-chevron-down ms-2"></i></a>
         </div>
     </header>
