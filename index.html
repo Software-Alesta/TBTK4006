@@ -2,158 +2,215 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Python ile Sayıların Gizemli Dünyası</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@300;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
 <style>
 body {
     margin:0;
-    background:#0b0f19;
-    color:#d1d5db;
-    font-family: 'Inter', sans-serif;
     overflow:hidden;
+    font-family:'Poppins', sans-serif;
+    background:#0a0f1c;
+    color:#e5e7eb;
 }
 
-/* ekran */
+/* ARKA PLAN SAYILAR */
+canvas {
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+    opacity:0.15;
+}
+
+/* GENEL */
 .screen {
+    width:100%;
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    text-align:center;
     flex-direction:column;
-    padding:30px;
-    transition:1s;
+    text-align:center;
+    padding:40px;
 }
 
-/* başlık */
-h1 {
+/* BAŞLIK */
+.title {
     font-family:'Orbitron';
+    font-size:3rem;
     color:#7dd3fc;
-    text-shadow:0 0 10px rgba(125,211,252,0.3);
 }
 
-/* buton */
+/* SLOGAN */
+.subtitle {
+    font-size:1.2rem;
+    opacity:0.8;
+}
+
+/* BUTON */
 .btn-neon {
+    margin-top:30px;
+    padding:12px 30px;
     border:1px solid #7dd3fc;
     color:#7dd3fc;
     background:transparent;
-    padding:10px 25px;
-    margin-top:20px;
+    transition:0.3s;
 }
-
 .btn-neon:hover {
     background:#7dd3fc;
-    color:#000;
+    color:black;
 }
 
-/* animasyonlar */
+/* GEÇİŞ */
 .fade {animation:fade 1s;}
 @keyframes fade {from{opacity:0} to{opacity:1}}
 
-.slide {animation:slide 1s;}
-@keyframes slide {from{transform:translateY(40px);opacity:0} to{opacity:1}}
+/* BÜYÜK YAZILAR */
+.big-text {
+    font-size:2rem;
+    margin:10px 0;
+}
 
-.zoom {animation:zoom 1s;}
-@keyframes zoom {from{transform:scale(0.8);opacity:0} to{opacity:1}}
+/* ASAL SAYFA */
+.asal-layout {
+    display:flex;
+    justify-content:space-around;
+    width:100%;
+}
 
-/* TEMALAR */
-.asal {background:linear-gradient(#0f172a,#020617);}
-.armstrong {background:linear-gradient(#1e1b4b,#020617);}
-.mukemmel {background:linear-gradient(#052e16,#020617);}
-.fibonacci {background:linear-gradient(#3f1d2e,#020617);}
-.palindrom {background:linear-gradient(#1e293b,#020617);}
+.card-box {
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:15px;
+    width:30%;
+}
 
-p {max-width:700px;}
+/* ARMSTRONG */
+.center-glow {
+    font-size:2.5rem;
+    text-shadow:0 0 20px #a78bfa;
+}
+
+/* FIBONACCI spiral hissi */
+.fibo {
+    font-size:1.5rem;
+    letter-spacing:5px;
+}
+
+/* PALİNDROM */
+.mirror {
+    transform:scaleX(-1);
+    display:inline-block;
+}
 </style>
 </head>
 
 <body>
 
+<canvas id="bg"></canvas>
+
 <div id="app" class="screen"></div>
 
 <script>
+// ARKA PLAN SAYILAR
+let canvas = document.getElementById("bg");
+let ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-let step = 0;
+let nums = "0123456789";
+let drops = Array(100).fill(1);
 
-const scenes = [
+function draw(){
+    ctx.fillStyle="rgba(10,15,28,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-{
-title:"Python ile Sayıların Gizemli Dünyası",
-text:"Bu dünyada sayılar sadece işlem değildir. Her biri farklı bir karaktere sahiptir.",
-btn:"Dünyaya Giriş Yap",
-anim:"zoom"
-},
+    ctx.fillStyle="#7dd3fc";
+    ctx.font="15px monospace";
 
-{
-title:"Bu Dünya Nedir?",
-text:"Matematikte bazı sayılar vardır ki sıradan değildir. Onlar belirli kurallara göre davranır, özel özellikler taşır ve matematiğin temel yapı taşlarını oluşturur. Bu projede bu özel sayıları keşfedecek ve onların nasıl çalıştığını öğreneceksin.",
-btn:"Diyara Giriş Yap",
-anim:"fade"
-},
+    for(let i=0;i<drops.length;i++){
+        let text = nums[Math.floor(Math.random()*nums.length)];
+        ctx.fillText(text,i*15,drops[i]*15);
 
-{
-title:"Sayıların Diyarına Hoş Geldin",
-text:"Bu diyarda her sayı bir kimliğe sahiptir. Şimdi bu dünyanın en özel sayı türleri ile tanışacaksın.",
-anim:"slide"
-},
+        if(drops[i]*15 > canvas.height && Math.random()>0.95)
+            drops[i]=0;
 
-// ASAL
-{
-title:"Asal Sayılar",
-text:"Asal sayılar, yalnızca 1'e ve kendisine bölünebilen sayılardır. Matematikte sayıların yapı taşları olarak kabul edilirler çünkü her sayı asal sayıların çarpımı olarak yazılabilir. Örnekler: 2, 3, 5, 7, 11. Kriptografi gibi alanlarda da çok önemli rol oynarlar.",
-class:"asal",
-anim:"fade"
-},
-
-// ARMSTRONG
-{
-title:"Armstrong Sayılar",
-text:"Bir sayının basamaklarının kuvvetlerinin toplamı kendisine eşitse bu sayıya Armstrong sayısı denir. Örneğin 153 = 1³ + 5³ + 3³. Bu sayılar sayının kendi iç gücünü temsil eder.",
-class:"armstrong",
-anim:"zoom"
-},
-
-// MÜKEMMEL
-{
-title:"Mükemmel Sayılar",
-text:"Bir sayının kendisi hariç pozitif bölenlerinin toplamı kendisine eşitse mükemmel sayıdır. Örneğin 6 = 1+2+3. Bu sayılar matematikte denge ve uyumu temsil eder.",
-class:"mukemmel",
-anim:"slide"
-},
-
-// FIBONACCI
-{
-title:"Fibonacci Sayıları",
-text:"Her sayı kendisinden önceki iki sayının toplamıdır. 0,1,1,2,3,5,8... Bu dizilim doğada sıkça görülür; çiçeklerde, deniz kabuklarında ve galaksilerde bile bulunur.",
-class:"fibonacci",
-anim:"fade"
-},
-
-// PALİNDROM
-{
-title:"Palindrom Sayılar",
-text:"Ters çevrildiğinde değişmeyen sayılardır. Örneğin 121, 1331. Simetri ve dengeyi temsil ederler.",
-class:"palindrom",
-anim:"zoom"
+        drops[i]++;
+    }
 }
+setInterval(draw,60);
 
-];
+// SAHNELER
+let step=0;
 
 function render(){
-let s = scenes[step];
+let html="";
 
-document.body.className = s.class || "";
+// 0 ANA
+if(step===0){
+html=`
+<h1 class="title fade">Python ile Sayıların Gizemli Dünyası</h1>
+<p class="subtitle fade">Sayılar düşündüğünden daha fazlasıdır.</p>
+<button class="btn-neon" onclick="next()">Dünyaya Giriş Yap</button>
+`;
+}
 
-document.getElementById("app").innerHTML = `
-<div class="${s.anim}">
-<h1>${s.title}</h1>
-<p class="mt-3">${s.text}</p>
-${s.btn ? `<button class="btn btn-neon" onclick="next()">${s.btn}</button>`:""}
+// 1 HİKAYE
+if(step===1){
+html=`
+<div class="fade">
+<p class="big-text">Sayıların diyarına hoş geldin</p>
+<p class="big-text">Bu diyarda her sayı ayrı bir kimliğe sahiptir</p>
+<p class="big-text">Özel olanlar... diğerlerinden farklıdır</p>
+<p class="big-text">Onları keşfetmeye hazır mısın?</p>
 </div>
 `;
+}
+
+// 2 ASAL
+if(step===2){
+html=`
+<h1>Asal Sayılar</h1>
+<div class="asal-layout mt-4">
+<div class="card-box">Sadece 1 ve kendisine bölünür</div>
+<div class="card-box">Matematiğin temel yapı taşıdır</div>
+<div class="card-box">Örnek: 2,3,5,7,11</div>
+</div>
+`;
+}
+
+// 3 ARMSTRONG
+if(step===3){
+html=`
+<h1>Armstrong Sayılar</h1>
+<p class="center-glow mt-4">153 = 1³ + 5³ + 3³</p>
+<p>Kendi basamaklarının gücünü taşır</p>
+`;
+}
+
+// 4 FIBO
+if(step===4){
+html=`
+<h1>Fibonacci</h1>
+<p class="fibo mt-4">0 → 1 → 1 → 2 → 3 → 5 → 8</p>
+<p>Doğanın matematiksel ritmi</p>
+`;
+}
+
+// 5 PALİNDROM
+if(step===5){
+html=`
+<h1>Palindrom</h1>
+<p class="mt-4">121 → <span class="mirror">121</span></p>
+<p>Aynı başlangıç, aynı son</p>
+`;
+}
+
+document.getElementById("app").innerHTML=html;
 }
 
 function next(){
@@ -161,16 +218,14 @@ step++;
 render();
 }
 
-// tıklayarak ilerleme
 document.body.addEventListener("click",()=>{
-if(step>0 && step<scenes.length-1){
+if(step>0 && step<5){
 step++;
 render();
 }
 });
 
 render();
-
 </script>
 
 </body>
