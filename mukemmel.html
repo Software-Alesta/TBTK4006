@@ -4,47 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bölüm 3: Mükemmel Sayılar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <style>
         :root { --theme-color: #ffd700; --dark-bg: #0a0a05; --card-bg: #1a1a00; }
-        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; background-image: radial-gradient(circle at top right, rgba(255, 215, 0, 0.1), transparent 50%); }
-        .neon-text { font-family: 'Orbitron', sans-serif; color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color), 0 0 20px var(--theme-color); }
-        .content-box { background: var(--card-bg); border-left: 4px solid var(--theme-color); padding: 30px; border-radius: 0 15px 15px 0; box-shadow: 10px 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
-        .content-box::after { content: '\f3a5'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: -20px; bottom: -30px; font-size: 150px; color: rgba(255, 215, 0, 0.05); z-index: 0; }
-        .example-number { display: inline-block; font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin: 10px; padding: 10px 20px; border: 1px solid var(--theme-color); border-radius: 10px; transition: 0.3s; }
-        .example-number:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); }
-        .btn-nav { border: 1px solid var(--theme-color); color: var(--theme-color); background: transparent; padding: 10px 20px; border-radius: 5px; text-decoration: none; transition: 0.3s; }
-        .btn-nav:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 15px var(--theme-color); }
+        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; }
+        .neon-text { font-family: 'Orbitron', sans-serif; color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color); }
+        .content-box { background: var(--card-bg); border: 2px solid var(--theme-color); padding: 40px; border-radius: 15px; }
+        .explanation { font-size: 1.2rem; line-height: 1.9; color: #ffffff; }
+        .calc-box { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 10px; border-left: 5px solid var(--theme-color); margin: 25px 0; font-family: 'Orbitron', sans-serif; color: #ffd700; }
+        .example-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .example-item { border: 2px solid var(--theme-color); padding: 20px; text-align: center; border-radius: 12px; font-family: 'Orbitron', sans-serif; font-size: 1.3rem; transition: 0.4s; background: rgba(255, 215, 0, 0.05); }
+        .example-item:hover { background: var(--theme-color); color: #000; transform: scale(1.05); }
+        .btn-nav { border: 2px solid var(--theme-color); color: var(--theme-color); padding: 12px 25px; border-radius: 8px; text-decoration: none; font-family: 'Orbitron', sans-serif; }
+        .btn-nav:hover { background: var(--theme-color); color: #000; }
     </style>
 </head>
 <body>
     <div class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-5" data-aos="fade-down">
-            <a href="armstrong.html" class="btn-nav"><i class="fas fa-chevron-left"></i> Geri: Armstrong</a>
-            <span class="text-secondary font-monospace">SEVİYE 3 / 5</span>
-            <a href="fibonacci.html" class="btn-nav">Sıradaki: Fibonacci <i class="fas fa-chevron-right"></i></a>
-        </div>
+        <nav class="d-flex justify-content-between align-items-center mb-5" data-aos="fade-down">
+            <a href="armstrong.html" class="btn-nav"><i class="fas fa-chevron-left me-2"></i> GERİ</a>
+            <span class="text-secondary fw-bold">SEVİYE 03 / 05</span>
+            <a href="fibonacci.html" class="btn-nav">İLERİ <i class="fas fa-chevron-right ms-2"></i></a>
+        </nav>
 
         <div class="row align-items-center">
-            <div class="col-lg-5 text-center mb-4" data-aos="fade-right">
-                <i class="fas fa-gem" style="font-size: 10rem; color: var(--theme-color); text-shadow: 0 0 40px var(--theme-color);"></i>
-                <h1 class="neon-text mt-4 display-4">MÜKEMMEL</h1>
-                <p class="text-muted mt-2">Matematiğin Kusursuz Mücevherleri</p>
+            <div class="col-lg-5 text-center mb-5" data-aos="zoom-in">
+                <i class="fas fa-gem" style="font-size: 12rem; color: var(--theme-color); filter: drop-shadow(0 0 25px var(--theme-color));"></i>
+                <h1 class="neon-text mt-4 display-4 fw-bold">MÜKEMMEL</h1>
+                <p class="text-secondary mt-3 fs-5">Sayısal Kusursuzluk</p>
             </div>
             <div class="col-lg-7" data-aos="fade-left">
                 <div class="content-box">
-                    <h3 class="neon-text fs-4 mb-3">Tam Bir Denge Hikayesi</h3>
-                    <p style="position: relative; z-index: 1;">Kendisi hariç pozitif tam bölenlerinin toplamı kendisine eşit olan sayılara denir. Bu sayılar o kadar nadirdir ki, antik çağlardan beri "mükemmelliğin" simgesi olmuşlardır.</p>
-                    <h4 class="mt-4 mb-3 text-light">Kusursuz Örnek: 6</h4>
-                    <p class="text-secondary">6'nın bölenleri: 1, 2, 3 <br> Toplam: 1 + 2 + 3 = 6!</p>
-                    <div class="mt-3">
-                        <div class="example-number">6</div>
-                        <div class="example-number">28</div>
-                        <div class="example-number">496</div>
+                    <h2 class="neon-text fs-3 mb-4"><i class="fas fa-balance-scale me-2"></i> Matematiksel Özellik</h2>
+                    <p class="explanation">
+                        Bir sayının kendisi hariç pozitif tam bölenlerinin toplamı, tam olarak o sayının kendisine eşitse, o sayı "Mükemmel Sayı" olarak adlandırılır.
+                    </p>
+                    <div class="calc-box">
+                        <i class="fas fa-check-double me-2"></i> HESAPLAMA: 28 Sayısı <br>
+                        Bölenler: 1, 2, 4, 7, 14 <br>
+                        Toplam: 1 + 2 + 4 + 7 + 14 = 28
+                    </div>
+                    <h3 class="text-light mt-4 fs-5 mb-3">Kusursuz 6 Örnek:</h3>
+                    <div class="example-grid">
+                        <div class="example-item">6</div><div class="example-item">28</div><div class="example-item">496</div>
+                        <div class="example-item">8128</div><div class="example-item">33550336</div><div class="example-item">8.5x10⁹</div>
                     </div>
                 </div>
             </div>
