@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bölüm 3: Mükemmel Sayılar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --theme-color: #ffd700; --dark-bg: #0a0a00; }
+        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; }
+        .neon-text { font-family: 'Orbitron', sans-serif; color: var(--theme-color); text-shadow: 0 0 15px var(--theme-color); }
+        .gem-box { border: 2px solid var(--theme-color); background: rgba(255, 215, 0, 0.05); padding: 40px; border-radius: 50% 50% 0 0; border-bottom: none; }
+        .btn-nav { border: 1px solid var(--theme-color); color: var(--theme-color); background: transparent; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
+        .btn-nav:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); }
+    </style>
+</head>
+<body>
+    <div class="container py-5 text-center">
+        <div class="d-flex justify-content-between mb-5">
+            <a href="armstrong.html" class="btn-nav">Geri</a>
+            <span class="neon-text">SEVİYE 3</span>
+            <a href="fibonacci.html" class="btn-nav">İleri</a>
+        </div>
+        <div class="gem-box mb-4">
+            <i class="fas fa-gem mb-4" style="font-size: 8rem; color: var(--theme-color);"></i>
+            <h1 class="neon-text display-3">MÜKEMMEL SAYILAR</h1>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <p class="fs-5">Kendisi hariç pozitif tam bölenlerinin toplamı kendisine eşit olan sayılardır. Antik Yunan'dan beri bu sayılar "kusursuzluğun" sembolü olmuştur.</p>
+                <div class="p-3 bg-dark rounded border border-warning">6 = 1 + 2 + 3</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
