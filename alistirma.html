@@ -10,7 +10,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; --error-red: #ff3333; --neon-pink: #ff0055; }
-        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow: hidden; }
+        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow-x: hidden; }
         
         /* Geçiş Efekti */
         #loader {
@@ -92,13 +92,23 @@
 
         .neon-title { font-family: 'Orbitron', sans-serif; font-weight: bold; letter-spacing: 2px; }
         .sub-text { color: #aaa; font-style: italic; font-size: 0.95rem; display: block; margin-bottom: 15px; }
+
+        /* MOBİL UYUMLULUK */
+        @media (max-width: 768px) {
+            body { overflow-y: auto; }
+            .input-section { position: relative; width: 100%; height: auto; min-height: 50vh; padding: 80px 20px 40px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            .results-section { margin-left: 0; width: 100%; height: auto; padding: 20px; overflow-y: visible; }
+            .back-link { top: 15px; left: 15px; font-size: 0.75rem; padding: 8px 15px; }
+            .number-input { width: 100%; font-size: 2.5rem; }
+            .game-link { width: 100%; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body onload="hideLoader()">
 
     <div id="loader">
         <div class="loader-circle"></div>
-        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 220px;">ALIŞTIRMA MODU BAŞLATILIYOR</h4>
+        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 220px; text-align:center;">ALIŞTIRMA MODU<br>BAŞLATILIYOR</h4>
     </div>
 
     <div class="input-section">
