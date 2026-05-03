@@ -23,12 +23,14 @@
 
         /* MOBİL UYUMLULUK */
         @media (max-width: 768px) {
-            .example-grid { grid-template-columns: repeat(2, 1fr); }
+            .example-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .content-box { padding: 25px 15px; }
             .btn-nav { padding: 8px 12px; font-size: 0.8rem; }
+            .example-item { font-size: 1.2rem; padding: 15px; }
         }
         @media (max-width: 480px) {
-            .example-grid { grid-template-columns: 1fr; }
+            .example-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } /* Mobilde 2 sütun, 3 satır yapar */
+            .example-item { font-size: 1.1rem; padding: 12px 5px; }
         }
     </style>
 </head>
