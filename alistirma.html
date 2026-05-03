@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; --error-red: #ff3333; }
+        :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; --error-red: #ff3333; --neon-pink: #ff0055; }
         body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow: hidden; }
         
         /* Geçiş Efekti */
@@ -49,10 +49,9 @@
             background: rgba(0,0,0,0.4); border: 2px solid var(--main-cyan); border-radius: 15px; 
             color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; 
             text-align: center; width: 80%; padding: 25px; transition: 0.4s;
-            appearance: textfield; /* Spinnerları kaldırır */
+            appearance: textfield;
         }
         
-        /* Spin tuşlarını tamamen kapatma */
         .number-input::-webkit-outer-spin-button,
         .number-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
@@ -63,6 +62,19 @@
             cursor: pointer; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transition: 0.3s;
         }
         .analyze-btn:hover { transform: translateY(-3px); box-shadow: 0 0 40px var(--main-cyan); }
+
+        /* Oyun Geçiş Butonu */
+        .game-link {
+            margin-top: 20px; width: 75%; text-decoration: none;
+            border: 2px solid var(--neon-pink); color: var(--neon-pink);
+            font-family: 'Orbitron', sans-serif; padding: 12px;
+            border-radius: 8px; text-align: center; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .game-link:hover {
+            background: var(--neon-pink); color: #000;
+            box-shadow: 0 0 25px var(--neon-pink); transform: translateY(-2px);
+        }
 
         /* Sağ Panel */
         .results-section { margin-left: 40%; padding: 60px; height: 100vh; overflow-y: auto; }
@@ -84,7 +96,6 @@
 </head>
 <body onload="hideLoader()">
 
-    <!-- Başlangıç Efekti -->
     <div id="loader">
         <div class="loader-circle"></div>
         <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 220px;">ALIŞTIRMA MODU BAŞLATILIYOR</h4>
@@ -95,46 +106,48 @@
         
         <h2 class="neon-title mb-4" style="color: var(--main-cyan);">SAYI ANALİZİ</h2>
         
-        <!-- Sadece rakam girişini kabul eden, sembolleri engelleyen input -->
         <input type="number" id="numInput" class="number-input" placeholder="---" 
                oninput="handleInput()" 
                onkeydown="return event.keyCode !== 190 && event.keyCode !== 110 && event.keyCode !== 188 && event.keyCode !== 107 && event.keyCode !== 109">
         
         <p id="helperText" class="text-secondary mt-4">Analiz edilecek bir tam sayı girin...</p>
+        
         <button id="testBtn" class="analyze-btn" onclick="analyzeNumber()">ANALİZ ET <i class="fas fa-bolt ms-2"></i></button>
+
+        <a href="oyun.html" class="game-link">
+            <i class="fas fa-gamepad me-2"></i> OYUN DÜNYASINA GİRİŞ YAP
+        </a>
     </div>
 
     <div class="results-section" id="resultsArea">
-        <!-- Başarı Kartları -->
         <div id="card-asal" class="result-card type-asal" data-aos="fade-left">
             <h2 class="neon-title" style="color: var(--main-purple);">ASAL SAYILAR</h2>
             <span class="sub-text">Matematiğin Bölünemez Yapı Taşları</span>
-            <p>Bu değer, tam olarak sadece 1'e ve kendisine bölünebilmektedir. Sayı sisteminin temel bir parçasıdır.</p>
+            <p>Bu değer, tam olarak sadece 1'e ve kendisine bölünebilmektedir.</p>
         </div>
 
         <div id="card-armstrong" class="result-card type-armstrong" data-aos="fade-left">
             <h2 class="neon-title" style="color: #ff6600;">ARMSTRONG</h2>
             <span class="sub-text">Kuvvetlerin Dengesi</span>
-            <p>Sayıyı oluşturan basamakların kuvvetleri toplamı, sayının çekirdek değerine eşittir.</p>
+            <p>Sayıyı oluşturan basamakların kuvvetleri toplamı, sayının kendisine eşittir.</p>
         </div>
 
         <div id="card-mukemmel" class="result-card type-mukemmel" data-aos="fade-left">
             <h2 class="neon-title" style="color: #ffd700;">MÜKEMMEL</h2>
             <span class="sub-text">Sayısal Kusursuzluk</span>
-            <p>Pozitif tam bölenlerinin toplamı (kendisi hariç) matematiksel bir uyumla kendisine eşittir.</p>
+            <p>Pozitif tam bölenlerinin toplamı kendisine eşittir.</p>
         </div>
 
         <div id="card-palindrom" class="result-card type-palindrom" data-aos="fade-left">
             <h2 class="neon-title" style="color: var(--main-cyan);">PALİNDROM</h2>
             <span class="sub-text">Sayısal Ayna Simetrisi</span>
-            <p>Bu sayı, ileri ve geri okunuşlarda tam bir görsel ve matematiksel simetri sergiler.</p>
+            <p>Bu sayı, ileri ve geri okunuşlarda tam bir simetri sergiler.</p>
         </div>
 
-        <!-- Hata Kartı -->
         <div id="card-none" class="result-card type-error" data-aos="zoom-in">
             <h2 class="neon-title" style="color: var(--error-red);">SONUÇ BULUNAMADI</h2>
             <span class="sub-text">Sınıflandırma Dışı Değer</span>
-            <p>Girilen sayı, veri tabanımızdaki özel sayı kategorilerinden hiçbirine uymamaktadır.</p>
+            <p>Girilen sayı özel kategorilerden hiçbirine uymamaktadır.</p>
         </div>
     </div>
 
@@ -150,13 +163,11 @@
             }, 1200);
         }
 
-        // Sembol ve ondalık girişini engelleme (Input bazlı koruma)
         function handleInput() {
             const input = document.getElementById('numInput');
             const btn = document.getElementById('testBtn');
             const helper = document.getElementById('helperText');
 
-            // Eğer girilen değer tam sayı değilse (nokta/virgül içerme durumu) temizle
             if (input.value.includes('.') || input.value.includes(',')) {
                 input.value = input.value.replace(/[.,]/g, "");
             }
@@ -172,10 +183,8 @@
         }
 
         function analyzeNumber() {
-            const numVal = document.getElementById('numInput').value;
-            const num = parseInt(numVal);
+            const num = parseInt(document.getElementById('numInput').value);
             let found = false;
-
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
 
             if (isPrime(num)) { showCard('card-asal'); found = true; }
@@ -193,7 +202,6 @@
             setTimeout(() => card.classList.add('aos-animate'), 50);
         }
 
-        // Matematik Motoru
         const isPrime = n => {
             if (n < 2) return false;
             for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
