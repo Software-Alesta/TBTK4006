@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; }
+        :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; --error-red: #ff3333; }
         body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow: hidden; }
         
-        /* Geçiş Efekti (Overlay) */
+        /* Geçiş Efekti */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--dark-bg); z-index: 9999; display: flex;
@@ -21,7 +21,7 @@
         .loader-circle {
             width: 150px; height: 150px; border: 3px solid transparent;
             border-top: 3px solid var(--main-cyan); border-radius: 50%;
-            animation: spin 1s linear infinite; position: relative;
+            animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -31,36 +31,43 @@
             align-items: center; border-right: 1px solid rgba(255,255,255,0.1); 
             position: fixed; width: 40%; background: linear-gradient(to bottom, #050508, #0a0a15);
         }
+        .back-link {
+            position: absolute; top: 30px; left: 30px; color: #666;
+            text-decoration: none; font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem; transition: 0.3s; border-bottom: 1px solid transparent;
+        }
+        .back-link:hover { color: var(--main-cyan); border-bottom: 1px solid var(--main-cyan); }
+
         .number-input { 
             background: transparent; border: 2px solid var(--main-cyan); border-radius: 15px; 
-            color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3rem; 
-            text-align: center; width: 80%; padding: 20px; transition: 0.4s;
+            color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; 
+            text-align: center; width: 80%; padding: 25px; transition: 0.4s;
         }
         
         .analyze-btn {
-            display: none; margin-top: 25px; padding: 15px 40px;
+            display: none; margin-top: 25px; padding: 15px 45px;
             background: var(--main-cyan); color: #000; border: none;
             border-radius: 8px; font-family: 'Orbitron', sans-serif; font-weight: bold;
-            cursor: pointer; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
-            transition: 0.3s;
+            cursor: pointer; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transition: 0.3s;
         }
         .analyze-btn:hover { transform: translateY(-3px); box-shadow: 0 0 40px var(--main-cyan); }
 
         /* Sağ Panel */
-        .results-section { margin-left: 40%; padding: 50px; height: 100vh; overflow-y: auto; }
-        
+        .results-section { margin-left: 40%; padding: 60px; height: 100vh; overflow-y: auto; }
         .result-card { 
-            border-radius: 15px; padding: 30px; margin-bottom: 30px; 
-            border-left: 8px solid; display: none; background: rgba(255,255,255,0.03); 
+            border-radius: 15px; padding: 35px; margin-bottom: 30px; 
+            border-left: 10px solid; display: none; background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
         }
         
-        .type-asal { border-color: #b100ff; }
+        .type-asal { border-color: var(--main-purple); }
         .type-armstrong { border-color: #ff6600; }
         .type-mukemmel { border-color: #ffd700; }
-        .type-palindrom { border-color: #00e5ff; }
+        .type-palindrom { border-color: var(--main-cyan); }
+        .type-error { border-color: var(--error-red); background: rgba(255, 51, 51, 0.05); }
 
-        .neon-title { font-family: 'Orbitron', sans-serif; font-weight: bold; }
-        .sub-text { color: #aaa; font-style: italic; font-size: 0.9rem; }
+        .neon-title { font-family: 'Orbitron', sans-serif; font-weight: bold; letter-spacing: 2px; }
+        .sub-text { color: #aaa; font-style: italic; font-size: 0.95rem; display: block; margin-bottom: 15px; }
     </style>
 </head>
 <body onload="hideLoader()">
@@ -68,43 +75,50 @@
     <!-- Başlangıç Efekti -->
     <div id="loader">
         <div class="loader-circle"></div>
-        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 200px;">SİSTEM BAŞLATILIYOR</h4>
+        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 220px;">SİSTEM BAŞLATILIYOR</h4>
     </div>
 
     <div class="input-section">
-        <a href="index.html" class="btn btn-outline-secondary mb-5"><i class="fas fa-home"></i></a>
-        <h2 class="neon-title mb-4" style="color: var(--main-cyan);">VERİ GİRİŞİ</h2>
+        <a href="index.html" class="back-link"><i class="fas fa-chevron-left me-2"></i> SAYILAR DİYARINA DÖN</a>
         
-        <input type="number" id="numInput" class="number-input" placeholder="0" oninput="handleInput()">
+        <h2 class="neon-title mb-4" style="color: var(--main-cyan);">VERİ ANALİZİ</h2>
+        <input type="number" id="numInput" class="number-input" placeholder="---" oninput="handleInput()">
         
-        <p id="helperText" class="text-secondary mt-4">Analiz etmek istediğiniz sayıyı girin...</p>
+        <p id="helperText" class="text-secondary mt-4">Analiz edilecek değeri sisteme girin...</p>
         <button id="testBtn" class="analyze-btn" onclick="analyzeNumber()">ANALİZ ET <i class="fas fa-bolt ms-2"></i></button>
     </div>
 
     <div class="results-section" id="resultsArea">
-        <!-- Kartlar buraya gelecek -->
+        <!-- Başarı Kartları -->
         <div id="card-asal" class="result-card type-asal" data-aos="fade-left">
-            <h2 class="neon-title" style="color: #b100ff;">ASAL SAYILAR</h2>
-            <p class="sub-text">Matematiğin Bölünemez Yapı Taşları</p>
-            <p class="mt-3">Bu sayı, sadece 1'e ve kendisine bölünebildiği için asal sınıfına girer.</p>
+            <h2 class="neon-title" style="color: var(--main-purple);">ASAL SAYILAR</h2>
+            <span class="sub-text">Matematiğin Bölünemez Yapı Taşları</span>
+            <p>Bu değer, tam olarak sadece 1'e ve kendisine bölünebilmektedir. Sayı sisteminin temel bir parçasıdır.</p>
         </div>
 
         <div id="card-armstrong" class="result-card type-armstrong" data-aos="fade-left">
             <h2 class="neon-title" style="color: #ff6600;">ARMSTRONG</h2>
-            <p class="sub-text">Kuvvetlerin Dengesi</p>
-            <p class="mt-3">Basamaklarının kuvvetleri toplamı kendisine eşittir.</p>
+            <span class="sub-text">Kuvvetlerin Dengesi</span>
+            <p>Sayıyı oluşturan basamakların kuvvetleri toplamı, sayının çekirdek değerine eşittir.</p>
         </div>
 
         <div id="card-mukemmel" class="result-card type-mukemmel" data-aos="fade-left">
             <h2 class="neon-title" style="color: #ffd700;">MÜKEMMEL</h2>
-            <p class="sub-text">Sayısal Kusursuzluk</p>
-            <p class="mt-3">Kendisi hariç bölenlerinin toplamı kendisine eşittir.</p>
+            <span class="sub-text">Sayısal Kusursuzluk</span>
+            <p>Pozitif tam bölenlerinin toplamı (kendisi hariç) matematiksel bir uyumla kendisine eşittir.</p>
         </div>
 
         <div id="card-palindrom" class="result-card type-palindrom" data-aos="fade-left">
-            <h2 class="neon-title" style="color: #00e5ff;">PALİNDROM</h2>
-            <p class="sub-text">Sayısal Ayna Simetrisi</p>
-            <p class="mt-3">Tersten okunuşu aynı olan bir sayıdır.</p>
+            <h2 class="neon-title" style="color: var(--main-cyan);">PALİNDROM</h2>
+            <span class="sub-text">Sayısal Ayna Simetrisi</span>
+            <p>Bu sayı, ileri ve geri okunuşlarda tam bir görsel ve matematiksel simetri sergiler.</p>
+        </div>
+
+        <!-- Hata Kartı -->
+        <div id="card-none" class="result-card type-error" data-aos="zoom-in">
+            <h2 class="neon-title" style="color: var(--error-red);">SONUÇ BULUNAMADI</h2>
+            <span class="sub-text">Sınıflandırma Dışı Değer</span>
+            <p>Girilen sayı, veri tabanımızdaki özel sayı kategorilerinden (Asal, Armstrong, Mükemmel, Palindrom) hiçbirine uymamaktadır.</p>
         </div>
     </div>
 
@@ -117,7 +131,7 @@
                 const loader = document.getElementById('loader');
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 800);
-            }, 1000);
+            }, 1200);
         }
 
         function handleInput() {
@@ -132,7 +146,7 @@
                 helper.style.display = 'block';
                 btn.style.display = 'none';
             }
-            // Sayı değiştiğinde eski sonuçları gizle (yeni analiz için temizlik)
+            // Sayı kutusu her değiştiğinde sağ tarafı temizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
         }
 
@@ -140,12 +154,18 @@
             const num = parseInt(document.getElementById('numInput').value);
             let found = false;
 
+            // Önceki sonuçları temizle
+            document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
+
             if (isPrime(num)) { showCard('card-asal'); found = true; }
             if (isArmstrong(num)) { showCard('card-armstrong'); found = true; }
             if (isPerfect(num)) { showCard('card-mukemmel'); found = true; }
             if (isPalindrome(num)) { showCard('card-palindrom'); found = true; }
 
-            if(!found) alert("Bu sayı girdiğimiz özel sınıflardan hiçbirine dahil değil.");
+            // Hiçbiri değilse hata kartını göster
+            if (!found) {
+                showCard('card-none');
+            }
         }
 
         function showCard(id) {
@@ -155,7 +175,7 @@
             setTimeout(() => card.classList.add('aos-animate'), 50);
         }
 
-        // Matematik Motoru
+        // Matematiksel Algoritmalar
         const isPrime = n => {
             if (n < 2) return false;
             for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
@@ -169,12 +189,17 @@
         };
 
         const isPerfect = n => {
+            if (n < 1) return false;
             let sum = 0;
             for (let i = 1; i < n; i++) if (n % i === 0) sum += i;
-            return sum === n && n !== 0;
+            return sum === n;
         };
 
-        const isPalindrome = n => n.toString() === n.toString().split('').reverse().join('');
+        const isPalindrome = n => {
+            if (n < 0) return false;
+            let s = n.toString();
+            return s === s.split('').reverse().join('');
+        };
     </script>
 </body>
 </html>
