@@ -10,164 +10,171 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; }
-        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow-x: hidden; }
+        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow: hidden; }
         
-        /* Sol Panel - Giriş Alanı */
-        .input-section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 1px solid rgba(255,255,255,0.1); position: fixed; width: 40%; }
-        .number-input { background: transparent; border: 2px solid var(--main-cyan); border-radius: 15px; color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3rem; text-align: center; width: 80%; padding: 20px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); transition: 0.3s; }
-        .number-input:focus { outline: none; box-shadow: 0 0 40px rgba(0, 229, 255, 0.5); transform: scale(1.02); }
-        
-        /* Sağ Panel - Sonuç Alanı */
-        .results-section { margin-left: 40%; padding: 50px; min-height: 100vh; }
-        
-        /* Dinamik Kart Temaları (Diğer sayfalardan gelen stil yansımaları) */
-        .result-card { border-radius: 15px; padding: 30px; margin-bottom: 30px; border-left: 8px solid; display: none; background: rgba(255,255,255,0.03); }
-        
-        .type-asal { border-color: #b100ff; box-shadow: 0 0 20px rgba(177, 0, 255, 0.1); }
-        .type-armstrong { border-color: #ff6600; box-shadow: 0 0 20px rgba(255, 102, 0, 0.1); }
-        .type-mukemmel { border-color: #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.1); }
-        .type-fibonacci { border-color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.1); }
-        .type-palindrom { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); }
+        /* Geçiş Efekti (Overlay) */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark-bg); z-index: 9999; display: flex;
+            justify-content: center; align-items: center; transition: 0.8s ease-in-out;
+        }
+        .loader-circle {
+            width: 150px; height: 150px; border: 3px solid transparent;
+            border-top: 3px solid var(--main-cyan); border-radius: 50%;
+            animation: spin 1s linear infinite; position: relative;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .neon-title { font-family: 'Orbitron', sans-serif; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        .sub-text { color: #aaa; font-style: italic; font-size: 0.9rem; }
+        /* Sol Panel */
+        .input-section { 
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; border-right: 1px solid rgba(255,255,255,0.1); 
+            position: fixed; width: 40%; background: linear-gradient(to bottom, #050508, #0a0a15);
+        }
+        .number-input { 
+            background: transparent; border: 2px solid var(--main-cyan); border-radius: 15px; 
+            color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3rem; 
+            text-align: center; width: 80%; padding: 20px; transition: 0.4s;
+        }
         
-        .placeholder-text { font-family: 'Orbitron', sans-serif; color: #333; text-align: center; margin-top: 40vh; }
+        .analyze-btn {
+            display: none; margin-top: 25px; padding: 15px 40px;
+            background: var(--main-cyan); color: #000; border: none;
+            border-radius: 8px; font-family: 'Orbitron', sans-serif; font-weight: bold;
+            cursor: pointer; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+            transition: 0.3s;
+        }
+        .analyze-btn:hover { transform: translateY(-3px); box-shadow: 0 0 40px var(--main-cyan); }
+
+        /* Sağ Panel */
+        .results-section { margin-left: 40%; padding: 50px; height: 100vh; overflow-y: auto; }
+        
+        .result-card { 
+            border-radius: 15px; padding: 30px; margin-bottom: 30px; 
+            border-left: 8px solid; display: none; background: rgba(255,255,255,0.03); 
+        }
+        
+        .type-asal { border-color: #b100ff; }
+        .type-armstrong { border-color: #ff6600; }
+        .type-mukemmel { border-color: #ffd700; }
+        .type-palindrom { border-color: #00e5ff; }
+
+        .neon-title { font-family: 'Orbitron', sans-serif; font-weight: bold; }
+        .sub-text { color: #aaa; font-style: italic; font-size: 0.9rem; }
     </style>
 </head>
-<body>
+<body onload="hideLoader()">
 
-    <!-- Sol Giriş Paneli -->
-    <div class="input-section">
-        <a href="index.html" class="btn btn-outline-secondary mb-5 font-monospace"><i class="fas fa-arrow-left"></i> GERİ DÖN</a>
-        <h2 class="neon-title mb-4" style="color: var(--main-cyan);">Sayıyı Test Et</h2>
-        <input type="number" id="numInput" class="number-input" placeholder="0" oninput="analyzeNumber()">
-        <p class="text-secondary mt-4">Analiz etmek istediğiniz sayıyı girin...</p>
+    <!-- Başlangıç Efekti -->
+    <div id="loader">
+        <div class="loader-circle"></div>
+        <h4 class="position-absolute neon-title" style="color: var(--main-cyan); margin-top: 200px;">SİSTEM BAŞLATILIYOR</h4>
     </div>
 
-    <!-- Sağ Sonuç Paneli -->
-    <div class="results-section" id="resultsArea">
-        <div id="placeholder" class="placeholder-text">
-            <i class="fas fa-microscope mb-3" style="font-size: 4rem;"></i>
-            <h3>ANALİZ BEKLENİYOR</h3>
-        </div>
+    <div class="input-section">
+        <a href="index.html" class="btn btn-outline-secondary mb-5"><i class="fas fa-home"></i></a>
+        <h2 class="neon-title mb-4" style="color: var(--main-cyan);">VERİ GİRİŞİ</h2>
+        
+        <input type="number" id="numInput" class="number-input" placeholder="0" oninput="handleInput()">
+        
+        <p id="helperText" class="text-secondary mt-4">Analiz etmek istediğiniz sayıyı girin...</p>
+        <button id="testBtn" class="analyze-btn" onclick="analyzeNumber()">ANALİZ ET <i class="fas fa-bolt ms-2"></i></button>
+    </div>
 
-        <!-- Asal Kartı -->
+    <div class="results-section" id="resultsArea">
+        <!-- Kartlar buraya gelecek -->
         <div id="card-asal" class="result-card type-asal" data-aos="fade-left">
             <h2 class="neon-title" style="color: #b100ff;">ASAL SAYILAR</h2>
             <p class="sub-text">Matematiğin Bölünemez Yapı Taşları</p>
-            <hr style="border-color: #b100ff;">
-            <p>Bu sayı, sadece 1'e ve kendisine bölünebildiği için asal sınıfına girer.</p>
+            <p class="mt-3">Bu sayı, sadece 1'e ve kendisine bölünebildiği için asal sınıfına girer.</p>
         </div>
 
-        <!-- Armstrong Kartı -->
-        <div id="card-armstrong" class="result-card type-armstrong" data-aos="fade-up">
+        <div id="card-armstrong" class="result-card type-armstrong" data-aos="fade-left">
             <h2 class="neon-title" style="color: #ff6600;">ARMSTRONG</h2>
             <p class="sub-text">Kuvvetlerin Dengesi</p>
-            <hr style="border-color: #ff6600;">
-            <p>Basamaklarının küpleri (veya basamak sayısı kadar kuvveti) toplamı kendisine eşittir.</p>
+            <p class="mt-3">Basamaklarının kuvvetleri toplamı kendisine eşittir.</p>
         </div>
 
-        <!-- Mükemmel Kartı -->
-        <div id="card-mukemmel" class="result-card type-mukemmel" data-aos="zoom-in">
+        <div id="card-mukemmel" class="result-card type-mukemmel" data-aos="fade-left">
             <h2 class="neon-title" style="color: #ffd700;">MÜKEMMEL</h2>
             <p class="sub-text">Sayısal Kusursuzluk</p>
-            <hr style="border-color: #ffd700;">
-            <p>Kendisi hariç bölenlerinin toplamı tam olarak kendisine eşittir.</p>
+            <p class="mt-3">Kendisi hariç bölenlerinin toplamı kendisine eşittir.</p>
         </div>
 
-        <!-- Palindrom Kartı -->
-        <div id="card-palindrom" class="result-card type-palindrom" data-aos="flip-up">
+        <div id="card-palindrom" class="result-card type-palindrom" data-aos="fade-left">
             <h2 class="neon-title" style="color: #00e5ff;">PALİNDROM</h2>
             <p class="sub-text">Sayısal Ayna Simetrisi</p>
-            <hr style="border-color: #00e5ff;">
-            <p>Bu sayı tersten okunduğunda da değerini korumaktadır.</p>
+            <p class="mt-3">Tersten okunuşu aynı olan bir sayıdır.</p>
         </div>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init();
+        AOS.init({ duration: 800 });
+
+        function hideLoader() {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 800);
+            }, 1000);
+        }
+
+        function handleInput() {
+            const val = document.getElementById('numInput').value;
+            const btn = document.getElementById('testBtn');
+            const helper = document.getElementById('helperText');
+
+            if (val !== "") {
+                helper.style.display = 'none';
+                btn.style.display = 'block';
+            } else {
+                helper.style.display = 'block';
+                btn.style.display = 'none';
+            }
+            // Sayı değiştiğinde eski sonuçları gizle (yeni analiz için temizlik)
+            document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
+        }
 
         function analyzeNumber() {
             const num = parseInt(document.getElementById('numInput').value);
-            const resultsArea = document.getElementById('resultsArea');
-            const placeholder = document.getElementById('placeholder');
-            
-            // Kartları sıfırla
-            document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
-            
-            if (isNaN(num)) {
-                placeholder.style.display = 'block';
-                return;
-            }
-            
-            placeholder.style.display = 'none';
             let found = false;
 
-            // 1. Asal Kontrolü
-            if (isPrime(num)) {
-                showCard('card-asal');
-                found = true;
-            }
+            if (isPrime(num)) { showCard('card-asal'); found = true; }
+            if (isArmstrong(num)) { showCard('card-armstrong'); found = true; }
+            if (isPerfect(num)) { showCard('card-mukemmel'); found = true; }
+            if (isPalindrome(num)) { showCard('card-palindrom'); found = true; }
 
-            // 2. Armstrong Kontrolü
-            if (isArmstrong(num)) {
-                showCard('card-armstrong');
-                found = true;
-            }
-
-            // 3. Mükemmel Kontrolü
-            if (isPerfect(num)) {
-                showCard('card-mukemmel');
-                found = true;
-            }
-
-            // 4. Palindrom Kontrolü
-            if (isPalindrome(num)) {
-                showCard('card-palindrom');
-                found = true;
-            }
-
-            if (!found) {
-                // Hiçbirine girmiyorsa özel bir durum eklenebilir veya boş kalabilir
-            }
+            if(!found) alert("Bu sayı girdiğimiz özel sınıflardan hiçbirine dahil değil.");
         }
 
         function showCard(id) {
             const card = document.getElementById(id);
             card.style.display = 'block';
-            // AOS'u tetiklemek için class'ı yenile
             card.classList.remove('aos-animate');
-            setTimeout(() => card.classList.add('aos-animate'), 10);
+            setTimeout(() => card.classList.add('aos-animate'), 50);
         }
 
-        // Matematiksel Fonksiyonlar
-        function isPrime(n) {
+        // Matematik Motoru
+        const isPrime = n => {
             if (n < 2) return false;
             for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
             return true;
-        }
+        };
 
-        function isArmstrong(n) {
-            let str = n.toString();
-            let len = str.length;
-            let sum = 0;
-            for (let char of str) sum += Math.pow(parseInt(char), len);
+        const isArmstrong = n => {
+            let s = n.toString(), l = s.length, sum = 0;
+            for (let c of s) sum += Math.pow(parseInt(c), l);
             return sum === n;
-        }
+        };
 
-        function isPerfect(n) {
-            if (n < 1) return false;
+        const isPerfect = n => {
             let sum = 0;
             for (let i = 1; i < n; i++) if (n % i === 0) sum += i;
-            return sum === n;
-        }
+            return sum === n && n !== 0;
+        };
 
-        function isPalindrome(n) {
-            let str = n.toString();
-            return str === str.split('').reverse().join('');
-        }
+        const isPalindrome = n => n.toString() === n.toString().split('').reverse().join('');
     </script>
 </body>
 </html>
