@@ -10,7 +10,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root { --theme-color: #00e5ff; --dark-bg: #00090a; --card-bg: #00151a; }
-        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
         .neon-text { font-family: 'Orbitron', sans-serif; color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color); }
         .content-box { background: var(--card-bg); border: 2px solid var(--theme-color); padding: 40px; border-radius: 15px; }
         .explanation { font-size: 1.2rem; line-height: 1.9; color: #ffffff; }
@@ -20,13 +20,23 @@
         .example-item:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-color); }
         .btn-nav { border: 2px solid var(--theme-color); color: var(--theme-color); padding: 12px 25px; border-radius: 8px; text-decoration: none; font-family: 'Orbitron', sans-serif; }
         .btn-nav:hover { background: var(--theme-color); color: #000; }
+
+        /* MOBİL UYUMLULUK */
+        @media (max-width: 768px) {
+            .example-grid { grid-template-columns: repeat(2, 1fr); }
+            .content-box { padding: 25px 15px; }
+            .btn-nav { padding: 8px 12px; font-size: 0.8rem; }
+        }
+        @media (max-width: 480px) {
+            .example-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <div class="container py-5">
         <nav class="d-flex justify-content-between align-items-center mb-5" data-aos="fade-down">
             <a href="fibonacci.html" class="btn-nav"><i class="fas fa-chevron-left me-2"></i> GERİ</a>
-            <span class="text-secondary fw-bold">SEVİYE 05 / 05</span>
+            <span class="text-secondary fw-bold text-center mx-2" style="font-size: 0.9rem;">SEVİYE 05 / 05</span>
             <a href="alistirma.html" class="btn-nav" style="background: var(--theme-color); color: #000;">ALIŞTIRMA YAP <i class="fas fa-sword ms-2"></i></a>
         </nav>
 
