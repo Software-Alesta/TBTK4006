@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python ile Sayıların Gizemli Dünyası</title>
+    <title>Sayılar Diyarı | Ana Sayfa</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -20,13 +20,12 @@
     <style>
         :root {
             --neon-blue: #00f3ff;
+            --neon-pink: #ff0055;
             --dark-bg: #050814;
             --card-bg: #0b132b;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--dark-bg);
@@ -35,16 +34,12 @@
             overflow-x: hidden;
         }
 
-        /* Neon Yazı Efekti */
         .neon-text {
             font-family: 'Orbitron', sans-serif;
             color: var(--neon-blue);
-            text-shadow: 0 0 5px rgba(0, 243, 255, 0.5), 
-                         0 0 10px rgba(0, 243, 255, 0.5), 
-                         0 0 20px var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px var(--neon-blue);
         }
 
-        /* Ana Karşılama Ekranı (Hero) */
         .hero-section {
             height: 100vh;
             display: flex;
@@ -53,65 +48,42 @@
             align-items: center;
             text-align: center;
             background: radial-gradient(circle at center, #0f1c3f 0%, var(--dark-bg) 70%);
-            position: relative;
         }
 
-        /* Neon Buton */
         .btn-neon {
             font-family: 'Orbitron', sans-serif;
             background: transparent;
             color: var(--neon-blue);
             border: 2px solid var(--neon-blue);
             padding: 15px 40px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             border-radius: 50px;
             text-decoration: none;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3) inset, 0 0 15px rgba(0, 243, 255, 0.3);
-            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            display: inline-block;
         }
 
         .btn-neon:hover {
             background: var(--neon-blue);
             color: #000;
-            box-shadow: 0 0 30px var(--neon-blue) inset, 0 0 30px var(--neon-blue);
+            box-shadow: 0 0 30px var(--neon-blue);
             transform: scale(1.05);
         }
 
-        /* Hikaye / Diyar Kısmı */
-        .story-section {
-            min-height: 100vh;
-            padding: 100px 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Sayı Kartları */
         .number-card {
             background-color: var(--card-bg);
             border: 1px solid rgba(0, 243, 255, 0.2);
             border-radius: 15px;
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
-            transition: all 0.4s ease;
-            height: 100%;
+            transition: all 0.4s;
             text-decoration: none;
             color: white;
             display: block;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .number-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(0,243,255,0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            height: 100%;
         }
 
         .number-card:hover {
@@ -121,113 +93,139 @@
             color: white;
         }
 
-        .number-card:hover::before {
-            opacity: 1;
+        .card-icon { font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px; }
+
+        /* Yeni Bölümler: Alıştırma ve Oyun */
+        .action-section { padding: 100px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        .practice-box {
+            background: rgba(0, 243, 255, 0.05);
+            border: 2px dashed var(--neon-blue);
+            border-radius: 20px;
+            padding: 50px;
         }
 
-        .card-icon {
-            font-size: 3.5rem;
-            color: var(--neon-blue);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
+        .game-cta {
+            background: linear-gradient(45deg, #050814, #1a1a2e);
+            border: 2px solid var(--neon-pink);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .number-card:hover .card-icon {
-            transform: scale(1.2);
-            text-shadow: 0 0 15px var(--neon-blue);
+        .game-cta::before {
+            content: '\f11b'; /* Gamepad icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            font-size: 15rem;
+            color: var(--neon-pink);
+            opacity: 0.05;
+            right: -50px;
+            bottom: -50px;
         }
 
-        .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+        .btn-game {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+        }
+
+        .btn-game:hover {
+            background: var(--neon-pink);
+            box-shadow: 0 0 30px var(--neon-pink);
         }
     </style>
 </head>
 <body>
 
-    <!-- KARŞILAMA EKRANI -->
+    <!-- HERO -->
     <header class="hero-section">
-        <div class="container" data-aos="zoom-in" data-aos-duration="1500">
+        <div class="container" data-aos="zoom-in">
             <h1 class="neon-text display-2 fw-bold mb-4">Python ile<br>Sayıların Gizemli Dünyası</h1>
-            <p class="lead fs-4 text-light w-75 mx-auto">Matematiğin derinliklerinde yatan sırları kodlamanın gücüyle açığa çıkarmaya hazır mısın?</p>
-            <a href="#diyar" class="btn-neon">Gizemli Dünyaya Katıl <i class="fas fa-arrow-right ms-2"></i></a>
+            <p class="lead fs-4 text-light w-75 mx-auto mb-5">Matematiğin derinliklerinde yatan sırları kodlamanın gücüyle açığa çıkarın.</p>
+            <a href="#diyar" class="btn-neon">Keşfe Başla <i class="fas fa-chevron-down ms-2"></i></a>
         </div>
     </header>
 
-    <!-- HİKAYE VE SAYILARIN LİSTESİ -->
-    <section id="diyar" class="story-section">
+    <!-- SAYILARIN LİSTESİ -->
+    <section id="diyar" class="py-5">
         <div class="container">
-            <div class="row text-center mb-5" data-aos="fade-up" data-aos-duration="1000">
-                <div class="col-12">
-                    <h2 class="neon-text display-4 mb-4">Sayıların Diyarına Hoş Geldin!</h2>
-                    <p class="fs-5 text-secondary w-75 mx-auto">
-                        Burası sıradan bir yer değil. Burada sayılar sadece hesaplamalarda kullanılmaz; onların bir ruhu, bir karakteri ve Python ile çözülmeyi bekleyen sırları vardır. Sen bir gezginsin ve şimdi bu diyarın en özel sakinleriyle tanışma vakti...
-                    </p>
-                    <h3 class="mt-5 mb-4 text-light fw-light">İşte Bu Diyarın Özelleri</h3>
-                    <div style="height: 2px; width: 100px; background-color: var(--neon-blue); margin: 0 auto; box-shadow: 0 0 10px var(--neon-blue);"></div>
-                </div>
-            </div>
-
-            <div class="row g-4 justify-content-center">
-                <!-- Asal Sayılar -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="neon-text text-center display-4 mb-5" data-aos="fade-up">Diyar'ın Özel Sakinleri</h2>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <a href="asal.html" class="number-card">
                         <i class="fas fa-shield-alt card-icon"></i>
                         <h4 class="card-title">Asal Sayılar</h4>
-                        <p class="text-secondary fs-6">Sadece kendisine ve 1'e bölünen, matematiğin yalnız ama güçlü muhafızları.</p>
+                        <p class="text-secondary">Sadece kendisine ve 1'e bölünen güçlü muhafızlar.</p>
                     </a>
                 </div>
-
-                <!-- Armstrong Sayıları -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <a href="armstrong.html" class="number-card">
                         <i class="fas fa-sun card-icon"></i>
                         <h4 class="card-title">Armstrong</h4>
-                        <p class="text-secondary fs-6">Kendi basamaklarının gücünden doğan, kendi kendini yaratan efsanevi sayılar.</p>
+                        <p class="text-secondary">Basamaklarının gücüyle kendini var eden efsaneler.</p>
                     </a>
                 </div>
-
-                <!-- Mükemmel Sayılar -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <a href="mukemmel.html" class="number-card">
                         <i class="fas fa-gem card-icon"></i>
                         <h4 class="card-title">Mükemmel</h4>
-                        <p class="text-secondary fs-6">Parçalarının toplamı bütününe eşit olan, kusursuzluğun matematikteki karşılığı.</p>
+                        <p class="text-secondary">Parçaları bütününe eşit olan kusursuz yapılar.</p>
                     </a>
                 </div>
-
-                <!-- Fibonacci Serisi -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="col-md-4 offset-md-2" data-aos="fade-up" data-aos-delay="400">
                     <a href="fibonacci.html" class="number-card">
                         <i class="fas fa-leaf card-icon"></i>
                         <h4 class="card-title">Fibonacci</h4>
-                        <p class="text-secondary fs-6">Doğanın gizli şifresi, sarmalların ve büyümenin altın oranla dansı.</p>
+                        <p class="text-secondary">Doğanın büyüme şifresi ve altın oran.</p>
                     </a>
                 </div>
-
-                <!-- Palindrom Sayılar -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
                     <a href="palindrom.html" class="number-card">
                         <i class="fas fa-sync-alt card-icon"></i>
                         <h4 class="card-title">Palindrom</h4>
-                        <p class="text-secondary fs-6">Baştan sona ve sondan başa aynı kalan, zamanın aynasındaki yansımalar.</p>
+                        <p class="text-secondary">İki yönden de aynı görünen simetrik yansımalar.</p>
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Bootstrap ve AOS Scripts -->
+    <!-- ALIŞTIRMA YAP BÖLÜMÜ -->
+    <section class="action-section" id="alistirma">
+        <div class="container">
+            <div class="practice-box text-center" data-aos="flip-right">
+                <i class="fas fa-code-branch fa-4x mb-4 text-info"></i>
+                <h2 class="neon-text mb-3">Bilgini Test Et</h2>
+                <p class="fs-5 mb-4">Öğrendiğin bu sayı türlerini Python ile denemek ve algoritmalarını kurmak için alıştırma sayfasına geç!</p>
+                <a href="alistirma.html" class="btn-neon">Alıştırmalara Git <i class="fas fa-terminal ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- OYUN DÜNYASI BÖLÜMÜ -->
+    <section class="action-section pb-5" id="oyun">
+        <div class="container">
+            <div class="game-cta" data-aos="zoom-in-up">
+                <h1 style="font-family: 'Orbitron'; color: var(--neon-pink); font-size: 3.5rem;" class="mb-4">ARENA SİNYALİ!</h1>
+                <p class="fs-4 mb-5 text-light">Kodlarınla sayıları avlamaya hazır mısın? Zamana karşı yarış, özel sayıları bul ve liderlik tablosuna adını yazdır!</p>
+                <a href="oyun.html" class="btn-neon btn-game">OYUN DÜNYASINA GİRİŞ YAP <i class="fas fa-gamepad ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-4 text-center text-secondary">
+        <small>&copy; 2026 Sayılar Diyarı - Python Rehberi</small>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Animasyonları Başlat
-        AOS.init({
-            once: true, // Animasyon sadece bir kere çalışsın
-            offset: 100 // Sayfa ne kadar kayınca animasyon başlasın
-        });
+        AOS.init({ once: true, offset: 100 });
     </script>
 </body>
 </html>
