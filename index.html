@@ -4,214 +4,180 @@
 <meta charset="UTF-8">
 <title>Python ile Sayıların Gizemli Dünyası</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 body {
     margin:0;
-    background: radial-gradient(circle at center, #0f0c29, #302b63, #24243e);
-    color: white;
-    font-family: 'Orbitron', sans-serif;
+    background:#0d1117;
+    color:#c9d1d9;
+    font-family: 'Inter', sans-serif;
+    overflow:hidden;
 }
 
-/* HERO */
-.hero {
-    height: 100vh;
+/* Ortalama */
+.screen {
+    width:100%;
+    height:100vh;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     text-align:center;
+    transition:1s;
 }
 
-.title {
-    font-size: 3rem;
-    color:#00eaff;
-    text-shadow: 0 0 20px #00eaff, 0 0 40px #8a2be2;
+/* Başlık */
+h1 {
+    font-size:2.5rem;
+    color:#58a6ff;
 }
 
-.subtitle {
+p {
+    max-width:600px;
     opacity:0.8;
-    margin-bottom:30px;
 }
 
-/* BUTTON */
-.btn-neon {
+/* Buton */
+.btn {
+    margin-top:20px;
     padding:12px 25px;
-    margin:10px;
-    border:1px solid #00eaff;
-    color:#00eaff;
+    border:1px solid #58a6ff;
     background:transparent;
+    color:#58a6ff;
+    cursor:pointer;
     transition:0.3s;
 }
 
-.btn-neon:hover {
-    background:#00eaff;
+.btn:hover {
+    background:#58a6ff;
     color:black;
-    box-shadow:0 0 20px #00eaff;
 }
 
-/* APP AREA */
-#app {
-    display:none;
-    padding:40px;
+/* Fade animasyon */
+.fade-out {
+    opacity:0;
+    transform:translateY(-20px);
 }
 
-/* CARD */
-.card {
-    background: rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    border-radius:15px;
+.fade-in {
+    opacity:1;
 }
 
-/* INPUT */
-input {
-    background:black !important;
-    color:#00eaff !important;
-    border:1px solid #00eaff !important;
-}
+/* Temalar */
+.asal { background:#161b22; }
+.armstrong { background:#1a1f2b; }
+.mukemmel { background:#141a1f; }
+.fibonacci { background:#1b1b1b; }
+.palindrom { background:#121212; }
 
-.glow {
-    color:#00eaff;
-    text-shadow:0 0 10px #00eaff;
-}
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero" id="menu">
-    <h1 class="title">Python ile Sayıların Gizemli Dünyası</h1>
-    <p class="subtitle">Matematiği keşfet, sayılarla oyna, zekanı geliştir</p>
-
-    <div>
-        <button class="btn-neon" onclick="egitim()">📘 Eğitim</button>
-        <button class="btn-neon" onclick="oyun()">🎮 Oyun</button>
-    </div>
-</div>
-
-<!-- APP -->
-<div id="app" class="container text-center"></div>
+<div id="app" class="screen"></div>
 
 <script>
-// PUANLAR
-const puanlar = {asal:3, armstrong:5, mukemmel:6, fibonacci:2, palindrom:2};
 
-// SAYI FONKSİYONLARI
-function asal(n){if(n<2)return false;for(let i=2;i<=Math.sqrt(n);i++)if(n%i===0)return false;return true;}
-function armstrong(n){let s=n.toString();return [...s].reduce((a,b)=>a+Math.pow(b,s.length),0)==n;}
-function mukemmel(n){let t=0;for(let i=1;i<n;i++)if(n%i==0)t+=i;return t==n;}
-function fibonacci(n){let a=0,b=1;while(b<n)[a,b]=[b,a+b];return b==n||n==0;}
-function palindrom(n){let s=n.toString();return s===[...s].reverse().join('');}
+let step = 0;
 
-// SAYFA GEÇİŞ
-function show(content){
-    document.getElementById("menu").style.display="none";
-    document.getElementById("app").style.display="block";
-    document.getElementById("app").innerHTML = content;
+// SAHNELER
+const scenes = [
+
+    // 0 - ANA MENÜ
+    {
+        title: "Python ile Sayıların Gizemli Dünyası",
+        text: "Bilinmeyen bir diyara adım atmaya hazır mısın?",
+        button: "Gizemli Dünyaya Katıl"
+    },
+
+    // 1 - HOŞ GELDİN
+    {
+        title: "Sayıların Diyarına Hoş Geldin",
+        text: "Bu dünyada sayılar sadece rakam değildir... Her biri bir kimliğe sahiptir."
+    },
+
+    // 2 - ANLATIM
+    {
+        title: "Bu Diyarın Özelleri Var",
+        text: "Bazı sayılar diğerlerinden farklıdır. Güçlüdür, nadirdir, özeldir."
+    },
+
+    // 3 - ASAL
+    {
+        title: "Asal Sayılar",
+        text: "Sadece kendine ve 1'e bölünür. Saf ve bölünemezdir.",
+        class: "asal"
+    },
+
+    // 4 - ARMSTRONG
+    {
+        title: "Armstrong Sayılar",
+        text: "Kendi basamaklarının gücünü taşır.",
+        class: "armstrong"
+    },
+
+    // 5 - MÜKEMMEL
+    {
+        title: "Mükemmel Sayılar",
+        text: "Bölenlerinin toplamı kendisine eşittir.",
+        class: "mukemmel"
+    },
+
+    // 6 - FIBONACCI
+    {
+        title: "Fibonacci Sayıları",
+        text: "Doğanın ritmini takip eder.",
+        class: "fibonacci"
+    },
+
+    // 7 - PALİNDROM
+    {
+        title: "Palindrom Sayılar",
+        text: "Başlangıç ve son aynı... zaman gibi.",
+        class: "palindrom"
+    }
+
+];
+
+// EKRAN BAS
+function render() {
+    let s = scenes[step];
+
+    document.body.className = s.class || "";
+
+    document.getElementById("app").innerHTML = `
+        <h1>${s.title}</h1>
+        <p>${s.text}</p>
+        ${s.button ? `<button class="btn" onclick="next()">${s.button}</button>` : ""}
+    `;
 }
 
-// EĞİTİM
-function egitim(){
-show(`
-<div class="card p-4">
-<h2 class="glow">Eğitim Modu</h2>
+// SONRAKİ
+function next() {
+    let app = document.getElementById("app");
 
-<p>Asal, Armstrong, Mükemmel, Fibonacci ve Palindrom sayıları keşfet.</p>
+    app.classList.add("fade-out");
 
-<input id="test" class="form-control mt-3" placeholder="Sayı gir">
-<button class="btn-neon mt-2" onclick="testEt()">Test Et</button>
-
-<p id="sonuc" class="mt-3 glow"></p>
-
-<button class="btn btn-secondary mt-3" onclick="geri()">Geri</button>
-</div>
-`);
+    setTimeout(() => {
+        step++;
+        render();
+        app.classList.remove("fade-out");
+        app.classList.add("fade-in");
+    }, 700);
 }
 
-function testEt(){
-let n=parseInt(document.getElementById("test").value);
-let s=[];
+// TIKLAYARAK DEVAM
+document.body.addEventListener("click", (e) => {
+    if(step > 0 && step < scenes.length - 1){
+        next();
+    }
+});
 
-if(asal(n))s.push("Asal");
-if(armstrong(n))s.push("Armstrong");
-if(mukemmel(n))s.push("Mükemmel");
-if(fibonacci(n))s.push("Fibonacci");
-if(palindrom(n))s.push("Palindrom");
+// BAŞLAT
+render();
 
-document.getElementById("sonuc").innerText = s.length? s.join(" | ") : "Özel değil";
-}
-
-// OYUN
-let kullanilan=[],p1=0,p2=0,tur=0;
-
-function oyun(){
-kullanilan=[];p1=0;p2=0;tur=0;
-
-show(`
-<div class="card p-4">
-<h2 class="glow">2 Kişilik Oyun</h2>
-
-<p id="sira" class="glow">Oyuncu 1</p>
-
-<input id="sayi" class="form-control" placeholder="Sayı gir">
-<button class="btn-neon mt-2" onclick="oyna()">Gönder</button>
-
-<p id="bilgi"></p>
-<p id="puan" class="glow"></p>
-
-<button class="btn btn-secondary mt-3" onclick="geri()">Geri</button>
-</div>
-`);
-}
-
-function oyna(){
-let n=parseInt(document.getElementById("sayi").value);
-
-if(kullanilan.includes(n)){
-document.getElementById("bilgi").innerText="Bu sayı kullanıldı!";
-return;
-}
-
-kullanilan.push(n);
-
-let puan=0,bulunan=[];
-
-if(asal(n)){puan+=puanlar.asal;bulunan.push("Asal");}
-if(armstrong(n)){puan+=puanlar.armstrong;bulunan.push("Armstrong");}
-if(mukemmel(n)){puan+=puanlar.mukemmel;bulunan.push("Mükemmel");}
-if(fibonacci(n)){puan+=puanlar.fibonacci;bulunan.push("Fibonacci");}
-if(palindrom(n)){puan+=puanlar.palindrom;bulunan.push("Palindrom");}
-
-if(tur%2==0)p1+=puan; else p2+=puan;
-
-document.getElementById("bilgi").innerText =
-`${n} → ${bulunan.join(", ")||"Özel değil"} (+${puan})`;
-
-tur++;
-
-document.getElementById("puan").innerText =
-`Oyuncu1: ${p1} | Oyuncu2: ${p2}`;
-
-if(tur>=10){
-document.getElementById("sira").innerText =
-p1>p2?"🏆 Oyuncu 1 Kazandı":
-p2>p1?"🏆 Oyuncu 2 Kazandı":"Berabere";
-return;
-}
-
-document.getElementById("sira").innerText =
-tur%2==0?"Oyuncu 1":"Oyuncu 2";
-}
-
-// GERİ
-function geri(){
-document.getElementById("app").style.display="none";
-document.getElementById("menu").style.display="flex";
-}
 </script>
 
 </body>
