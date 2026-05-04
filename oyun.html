@@ -14,7 +14,6 @@
         #pageLoader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); z-index: 10000; display: flex; justify-content: center; align-items: center; transition: 1s ease; }
         .neon-title { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 15px var(--neon-pink); color: var(--neon-pink); }
         
-        /* Alistirma.html'den gelen modern geri dön butonu stili */
         .back-link {
             position: absolute; top: 40px; left: 40px; 
             color: #fff; text-decoration: none; font-family: 'Orbitron', sans-serif;
@@ -28,10 +27,7 @@
             box-shadow: 0 0 30px var(--neon-cyan); transform: scale(1.05);
         }
 
-        /* Sonuç ekranındaki butonlar için özel hizalama */
         .result-actions { display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 30px; }
-        
-        /* Sonuç ekranındaki butonun pozisyonunu sıfırlıyoruz */
         .back-link-final { position: static !important; }
 
         #nicknamePanel, #rulesPanel, #gameFlow, #gameArea, #resultScreen { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -48,6 +44,10 @@
         .game-input { background: transparent; border: 3px solid var(--neon-pink); color: #fff; font-size: 4rem; text-align: center; width: 350px; border-radius: 15px; font-family: 'Orbitron'; outline: none; transition: 0.3s; }
         .game-input:focus { box-shadow: 0 0 30px var(--neon-pink); }
         
+        /* Spin butonlarını gizle */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
         .shake { animation: shake 0.2s ease-in-out 0s 2; border-color: var(--neon-red) !important; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
@@ -78,9 +78,7 @@
 
     <!-- 1. Adım: İsim Giriş Paneli -->
     <div id="nicknamePanel" class="text-center px-3">
-        <!-- SOL ÜST GERİ DÖN BUTONU -->
         <a href="index.html" class="back-link"><i class="fas fa-arrow-left me-2"></i> SAYILAR DİYARINA DÖN</a>
-        
         <h2 class="neon-title mb-4">TAKMA ADINI GİR VE BAŞLA</h2>
         <input type="text" id="nickInput" class="game-input fs-2" placeholder="Oyuncu Adı..." maxlength="12">
         <div id="nickWarn" class="mt-3 text-danger fw-bold" style="height: 25px;"></div>
@@ -100,7 +98,7 @@
                 <li><i class="fas fa-shield-alt text-info me-2"></i> <b>Asal Sayı:</b> +3 Puan</li>
                 <li><i class="fas fa-project-diagram text-info me-2"></i> <b>Fibonacci Sayısı:</b> +2 Puan</li>
                 <li><i class="fas fa-sync text-info me-2"></i> <b>Palindrom Sayı:</b> +1 Puan</li>
-                <li><i class="fas fa-exclamation-triangle text-danger me-2"></i> Sayılar en fazla <b>8 haneli</b> olabilir!</li>
+                <li><i class="fas fa-exclamation-triangle text-danger me-2"></i> Sayılar en fazla <b>8 haneli</b> olabilir ve <b>0 ile başlayamaz</b>!</li>
             </ul>
             <button class="btn btn-info w-100 py-3 fw-bold" onclick="startCountdown()">ANLADIM, BAŞLAT!</button>
         </div>
@@ -119,9 +117,10 @@
             <h2 class="neon-title">PUAN: <span id="currentScore">0</span></h2>
         </div>
         
+        <!-- Harf ve 0 girişini engelleyen input -->
         <input type="number" id="gameInput" class="game-input mx-auto d-block" 
-               onkeypress="handleKeyPress(event)" 
-               oninput="if(this.value.length > 8) this.value = this.value.slice(0,8);" 
+               onkeydown="validateInput(event)"
+               oninput="limitInput(this)"
                placeholder="...">
                
         <div id="warningMsg" class="mt-3 text-danger fw-bold text-center" style="height: 30px; font-size: 1.2rem;"></div>
@@ -135,12 +134,8 @@
         <div class="final-list mx-auto" id="finalList"></div>
         
         <div class="result-actions">
-            <!-- LİDERLİK TABLOSU BUTONU -->
             <a href="leaderboard.html" class="btn btn-info px-4 py-2" style="border-radius: 50px; font-family: 'Orbitron'; min-width: 200px;"><i class="fas fa-trophy me-2"></i> LİDERLİK TABLOSU</a>
-            
             <button onclick="location.reload()" class="btn btn-outline-light px-4 py-2" style="border-radius: 50px; font-family: 'Orbitron'; min-width: 200px;"><i class="fas fa-redo me-2"></i> TEKRAR OYNA</button>
-            
-            <!-- SKOR ÖZETİNDEKİ AYNI STİLDE GERİ DÖN BUTONU -->
             <a href="index.html" class="back-link back-link-final"><i class="fas fa-arrow-left me-2"></i> SAYILAR DİYARINA DÖN</a>
         </div>
     </div>
@@ -148,6 +143,62 @@
     <script>
         let score = 0, timeLeft = 30, usedNumbers = [], nickname = "", entries = [];
 
+        // --- GİRİŞ KISITLAMALARI ---
+        function validateInput(e) {
+            const warnEl = document.getElementById('warningMsg');
+            
+            // Enter tuşuna basıldığında işlemi başlat
+            if (e.key === "Enter") {
+                handleSubmission();
+                return;
+            }
+
+            // Sadece rakamlara izin ver (0-9) ve backspace/delete gibi kontrol tuşlarına
+            const isNumber = /^[0-9]$/.test(e.key);
+            const isControl = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key);
+
+            if (!isNumber && !isControl) {
+                e.preventDefault();
+                return;
+            }
+
+            // İlk karakterin 0 olmasını engelle
+            if (e.target.value.length === 0 && e.key === "0") {
+                e.preventDefault();
+                warnEl.innerText = "SAYI 0 İLE BAŞLAYAMAZ!";
+                e.target.classList.add('shake');
+                setTimeout(() => { warnEl.innerText = ""; e.target.classList.remove('shake'); }, 1000);
+            }
+        }
+
+        function limitInput(el) {
+            if (el.value.length > 8) el.value = el.value.slice(0, 8);
+        }
+
+        function handleSubmission() {
+            const inputEl = document.getElementById('gameInput');
+            let valStr = inputEl.value;
+            const warnEl = document.getElementById('warningMsg');
+
+            if (valStr === "" || valStr === "0") {
+                inputEl.value = "";
+                return;
+            }
+
+            const val = parseInt(valStr);
+
+            if (usedNumbers.includes(val)) {
+                inputEl.classList.add('shake');
+                warnEl.innerText = "BU SAYIYI DAHA ÖNCE GİRDİN!";
+                setTimeout(() => { inputEl.classList.remove('shake'); warnEl.innerText = ""; }, 1000);
+            } else {
+                processNumber(val);
+                usedNumbers.push(val);
+            }
+            inputEl.value = "";
+        }
+
+        // --- OYUN MANTIĞI ---
         function startPage() {
             setTimeout(() => { 
                 document.getElementById('pageLoader').style.opacity = '0'; 
@@ -178,17 +229,12 @@
         function startCountdown() {
             document.getElementById('rulesPanel').classList.add('hidden');
             document.getElementById('gameFlow').classList.remove('hidden');
-            
             let count = 3;
             document.getElementById('countdown').innerText = count;
-            
             let timer = setInterval(() => {
                 count--;
                 document.getElementById('countdown').innerText = count;
-                if(count === 0) { 
-                    clearInterval(timer); 
-                    actualGameStart(); 
-                }
+                if(count === 0) { clearInterval(timer); actualGameStart(); }
             }, 1000);
         }
 
@@ -201,28 +247,6 @@
                 document.getElementById('gameTimer').innerText = timeLeft;
                 if(timeLeft <= 0) { clearInterval(gameTick); finishGame(); }
             }, 1000);
-        }
-
-        function handleKeyPress(e) {
-            if(e.key === "Enter") {
-                const inputEl = document.getElementById('gameInput');
-                let valStr = inputEl.value;
-                if(valStr === "") return;
-                if(valStr.length > 8) valStr = valStr.substring(0, 8);
-
-                const val = parseInt(valStr);
-                const warnEl = document.getElementById('warningMsg');
-
-                if(usedNumbers.includes(val)) {
-                    inputEl.classList.add('shake');
-                    warnEl.innerText = "BU SAYIYI DAHA ÖNCE GİRDİN!";
-                    setTimeout(() => { inputEl.classList.remove('shake'); warnEl.innerText = ""; }, 1000);
-                } else {
-                    processNumber(val);
-                    usedNumbers.push(val);
-                }
-                inputEl.value = "";
-            }
         }
 
         function processNumber(n) {
@@ -238,9 +262,8 @@
             if(types.length === 0) { 
                 types.push("Özel Değil"); 
                 totalP = 0; 
-                const inputEl = document.getElementById('gameInput');
-                inputEl.classList.add('shake');
-                setTimeout(() => inputEl.classList.remove('shake'), 400);
+                document.getElementById('gameInput').classList.add('shake');
+                setTimeout(() => document.getElementById('gameInput').classList.remove('shake'), 400);
             }
 
             score += totalP;
@@ -259,6 +282,7 @@
             log.scrollTop = log.scrollHeight;
         }
 
+        // --- MATEMATİKSEL KONTROLLER ---
         const isPrime = n => { if (n < 2) return false; for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false; return true; };
         const isArmstrong = n => { let s = n.toString(), l = s.length, sum = 0; for (let c of s) sum += Math.pow(parseInt(c), l); return sum === n; };
         const isPerfect = n => { if(n < 1) return false; let sum = 0; for (let i = 1; i < n; i++) if (n % i === 0) sum += i; return sum === n; };
