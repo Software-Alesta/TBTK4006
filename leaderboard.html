@@ -27,17 +27,23 @@
         .table thead { font-family: 'Orbitron'; color: var(--neon-cyan); font-size: 0.9rem; }
         .rank-gold { color: #ffd700; font-weight: bold; }
         
-        .btn-action { 
-            border: 1px solid var(--neon-cyan); color: var(--neon-cyan); 
-            font-family: 'Orbitron'; transition: 0.3s; background: transparent; padding: 10px 25px;
-            text-decoration: none; display: inline-block; border-radius: 5px;
+        /* Alistirma.html ve Arena.html ile uyumlu buton stili */
+        .back-link {
+            text-decoration: none; font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; transition: 0.4s; padding: 10px 25px;
+            border: 1px solid var(--neon-cyan); border-radius: 50px;
+            background: rgba(0, 229, 255, 0.05); color: #fff;
+            display: inline-flex; align-items: center; justify-content: center;
         }
-        .btn-action:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
+        .back-link:hover { 
+            background: var(--neon-cyan); color: #000; 
+            box-shadow: 0 0 30px var(--neon-cyan); transform: scale(1.05);
+        }
 
         /* MOBİL UYUMLULUK */
         @media (max-width: 768px) {
             .lb-card { padding: 20px; margin: 20px 10px; }
-            .btn-action { padding: 8px 15px; font-size: 0.8rem; text-align: center; }
+            .back-link { padding: 8px 18px; font-size: 0.75rem; width: 100%; }
             .d-flex.gap-3 { flex-direction: column; }
         }
     </style>
@@ -60,37 +66,71 @@
             </table>
 
             <div class="d-flex justify-content-center gap-3 mt-5">
-                <a href="oyun.html" class="btn-action">TEKRAR DENE</a>
-                <a href="index.html" class="btn-action" style="border-color: #fff; color: #fff;">SAYILAR DİYARINA DÖN</a>
+                <a href="arena.html" class="back-link"><i class="fas fa-play me-2"></i> TEKRAR DENE</a>
+                <a href="index.html" class="back-link" style="border-color: #fff;"><i class="fas fa-home me-2"></i> ANA SAYFA</a>
             </div>
         </div>
     </div>
 
     <script>
         const lbBody = document.getElementById('lbBody');
-        let data = JSON.parse(localStorage.getItem('leaderboard')) || [];
         
-        // Puana göre sıralama
-        data.sort((a,b) => b.score - a.score);
+        function loadLeaderboard() {
+            let data = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            
+            // Puana göre sıralama
+            data.sort((a,b) => b.score - a.score);
 
-        if(data.length === 0) {
-            lbBody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary">Arena henüz sessiz...</td></tr>';
-        } else {
-            data.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                const rankClass = index === 0 ? 'rank-gold' : '';
-                row.innerHTML = `
-                    <td class="text-center ${rankClass}">#${index + 1}</td>
-                    <td class="${rankClass}">${entry.name.toUpperCase()}</td>
-                    <td class="text-end fw-bold" style="color: var(--neon-cyan)">${entry.score}</td>
-                `;
-                lbBody.appendChild(row);
-            });
+            lbBody.innerHTML = '';
+
+            if(data.length === 0) {
+                lbBody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">Arena henüz sessiz...</td></tr>';
+            } else {
+                data.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    const rankClass = index === 0 ? 'rank-gold' : '';
+                    row.innerHTML = `
+                        <td class="text-center ${rankClass}">#${index + 1}</td>
+                        <td class="${rankClass}">${entry.name.toUpperCase()}</td>
+                        <td class="text-end fw-bold" style="color: var(--neon-cyan)">${entry.score}</td>
+                    `;
+                    lbBody.appendChild(row);
+                });
+            }
         }
 
-        // --- SAHİP İÇİN SIFIRLAMA METODU ---
-        // Konsola (F12) şunu yazarsan tablo sıfırlanır: 
-        // localStorage.removeItem('leaderboard'); location.reload();
+        // --- YÖNETİCİ KONSOL FONKSİYONLARI ---
+
+        // İsme göre silmek için konsola yaz: sil("isim")
+        window.sil = function(targetName) {
+            let data = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            const initialLength = data.length;
+            data = data.filter(entry => entry.name.toLowerCase() !== targetName.toLowerCase());
+            if (data.length < initialLength) {
+                localStorage.setItem('leaderboard', JSON.stringify(data));
+                console.log(`%c ✅ ${targetName} silindi.`, "color: #00e5ff; font-weight: bold;");
+                loadLeaderboard();
+            } else {
+                console.error(`❌ "${targetName}" bulunamadı.`);
+            }
+        };
+
+        // Sıraya göre silmek için konsola yaz: siradanSil(1)
+        window.siradanSil = function(rank) {
+            let data = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            data.sort((a,b) => b.score - a.score);
+            if (rank > 0 && rank <= data.length) {
+                const removed = data.splice(rank - 1, 1);
+                localStorage.setItem('leaderboard', JSON.stringify(data));
+                console.log(`%c ✅ #${rank} sıradaki ${removed[0].name} silindi.`, "color: #00e5ff; font-weight: bold;");
+                loadLeaderboard();
+            } else {
+                console.error("❌ Geçersiz sıra!");
+            }
+        };
+
+        // Sayfa yüklendiğinde tabloyu doldur
+        loadLeaderboard();
     </script>
 </body>
 </html>
