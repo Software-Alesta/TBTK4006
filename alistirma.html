@@ -46,11 +46,17 @@
             background: rgba(0,0,0,0.4); border: 2px solid var(--main-cyan); border-radius: 15px; 
             color: var(--main-cyan); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; 
             text-align: center; width: 80%; padding: 25px; transition: 0.4s;
-            appearance: textfield;
+            outline: none;
         }
         
-        .number-input::-webkit-outer-spin-button,
-        .number-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Chrome, Safari, Edge, Opera spin butonlarını gizle */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Firefox */
+        input[type=number] { -moz-appearance: textfield; }
+
+        .shake { animation: shake 0.2s ease-in-out 0s 2; border-color: var(--error-red) !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
         .analyze-btn {
             display: none; margin-top: 25px; padding: 15px 45px;
@@ -110,12 +116,12 @@
         
         <h2 class="neon-title mb-4" style="color: var(--main-cyan);">SAYI ANALİZİ</h2>
         
-        <!-- Sadece rakam girişi ve 8 karakter sınırı -->
         <input type="number" id="numInput" class="number-input" placeholder="---" 
                oninput="handleInput()" 
                onkeydown="handleKeyDown(event)">
         
         <p id="helperText" class="text-secondary mt-4">Analiz edilecek bir tam sayı girin...</p>
+        <div id="warningMsg" class="mt-2 text-danger fw-bold" style="height: 30px;"></div>
         
         <button id="testBtn" class="analyze-btn" onclick="analyzeNumber()">ANALİZ ET <i class="fas fa-bolt ms-2"></i></button>
 
@@ -125,6 +131,7 @@
     </div>
 
     <div class="results-section" id="resultsArea">
+        <!-- Kart içerikleri aynı kalıyor -->
         <div id="card-asal" class="result-card type-asal" data-aos="fade-left">
             <h2 class="neon-title" style="color: var(--main-purple);">ASAL SAYILAR</h2>
             <span class="sub-text">Matematiğin Bölünemez Yapı Taşları</span>
@@ -168,20 +175,33 @@
             }, 1200);
         }
 
-        // Klavye kontrolü: Harf engelleme ve Enter desteği
         function handleKeyDown(e) {
-            // İzin verilen tuşlar: Backspace, Delete, Tab, Escape, Enter ve Sayılar
-            const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight'];
-            
-            // Enter tuşu kontrolü
+            const inputEl = e.target;
+            const warnEl = document.getElementById('warningMsg');
+
             if (e.key === 'Enter') {
                 analyzeNumber();
                 return;
             }
 
-            // Sayı tuşları dışındakileri ve e, +, -, . gibi özel durumları engelle
-            if (!allowedKeys.includes(e.key) && (e.key < '0' || e.key > '9')) {
+            // Sadece rakamlar ve kontrol tuşları
+            const isNumber = /^[0-9]$/.test(e.key);
+            const isControl = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key);
+
+            if (!isNumber && !isControl) {
                 e.preventDefault();
+                return;
+            }
+
+            // 0 ile başlama engeli
+            if (inputEl.value.length === 0 && e.key === '0') {
+                e.preventDefault();
+                warnEl.innerText = "SAYI 0 İLE BAŞLAYAMAZ!";
+                inputEl.classList.add('shake');
+                setTimeout(() => {
+                    warnEl.innerText = "";
+                    inputEl.classList.remove('shake');
+                }, 1000);
             }
         }
 
@@ -202,21 +222,20 @@
                 helper.style.display = 'block';
                 btn.style.display = 'none';
             }
-            // Yeni sayı girildiğinde eski sonuçları gizle
+            
+            // Kullanıcı silme yaparsa veya yeni sayı girmeye başlarsa sonuçları temizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
         }
 
         function analyzeNumber() {
             const inputVal = document.getElementById('numInput').value;
-            if (inputVal === "") return;
+            if (inputVal === "" || inputVal === "0") return;
 
             const num = parseInt(inputVal);
             let found = false;
             
-            // Tüm kartları gizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
 
-            // Özel sayı kontrolleri
             if (isPrime(num)) { showCard('card-asal'); found = true; }
             if (isArmstrong(num)) { showCard('card-armstrong'); found = true; }
             if (isPerfect(num)) { showCard('card-mukemmel'); found = true; }
@@ -228,7 +247,6 @@
         function showCard(id) {
             const card = document.getElementById(id);
             card.style.display = 'block';
-            // Animasyonu tetiklemek için class yenileme
             card.classList.remove('aos-animate');
             setTimeout(() => card.classList.add('aos-animate'), 50);
         }
