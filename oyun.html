@@ -18,10 +18,10 @@
         .back-link {
             position: absolute; top: 40px; left: 40px; 
             color: #fff; text-decoration: none; font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem; transition: 0.4s; padding: 10px 20px;
+            font-size: 0.9rem; transition: 0.4s; padding: 10px 25px;
             border: 1px solid var(--neon-cyan); border-radius: 50px;
             background: rgba(0, 229, 255, 0.05); box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
-            z-index: 100;
+            z-index: 100; display: flex; align-items: center; justify-content: center;
         }
         .back-link:hover { 
             background: var(--neon-cyan); color: #000; 
@@ -29,13 +29,10 @@
         }
 
         /* Sonuç ekranındaki butonlar için özel hizalama */
-        .result-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .back-link-inline { 
-            position: static; display: inline-block; 
-            border-color: #aaa; background: rgba(255,255,255,0.05);
-            box-shadow: none;
-        }
-        .back-link-inline:hover { background: #fff; border-color: #fff; box-shadow: 0 0 20px #fff; }
+        .result-actions { display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 30px; }
+        
+        /* Sonuç ekranındaki butonun pozisyonunu sıfırlıyoruz */
+        .back-link-final { position: static !important; }
 
         #nicknamePanel, #rulesPanel, #gameFlow, #gameArea, #resultScreen { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
@@ -65,7 +62,7 @@
         .rules-card { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--neon-cyan); padding: 2rem; border-radius: 20px; max-width: 600px; backdrop-filter: blur(10px); }
 
         @media (max-width: 768px) {
-            .back-link { top: 15px; left: 15px; font-size: 0.75rem; padding: 8px 15px; }
+            .back-link { top: 15px; left: 15px; font-size: 0.75rem; padding: 8px 18px; }
             #gameArea { justify-content: flex-start !important; padding-top: 30px; }
             .number-log { position: relative; right: auto; top: auto; width: 100%; height: 45vh; margin-top: 20px; padding-right: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px;}
             .game-input { width: 90%; font-size: 2.5rem; }
@@ -138,12 +135,13 @@
         <div class="final-list mx-auto" id="finalList"></div>
         
         <div class="result-actions">
-            <a href="leaderboard.html" class="btn btn-info px-4 py-2" style="border-radius: 50px; font-family: 'Orbitron';"><i class="fas fa-trophy me-2"></i> LİDERLER</a>
+            <!-- LİDERLİK TABLOSU BUTONU -->
+            <a href="leaderboard.html" class="btn btn-info px-4 py-2" style="border-radius: 50px; font-family: 'Orbitron'; min-width: 200px;"><i class="fas fa-trophy me-2"></i> LİDERLİK TABLOSU</a>
             
-            <button onclick="location.reload()" class="btn btn-outline-light px-4 py-2" style="border-radius: 50px; font-family: 'Orbitron';"><i class="fas fa-redo me-2"></i> TEKRAR DENE</button>
+            <button onclick="location.reload()" class="btn btn-outline-light px-4 py-2" style="border-radius: 50px; font-family: 'Orbitron'; min-width: 200px;"><i class="fas fa-redo me-2"></i> TEKRAR DENE</button>
             
-            <!-- ALISTIRMA STİLİNDE GERİ DÖN BUTONU (INLINE) -->
-            <a href="index.html" class="back-link back-link-inline"><i class="fas fa-home me-2"></i> ANA SAYFA</a>
+            <!-- SKOR ÖZETİNDEKİ AYNI STİLDE GERİ DÖN BUTONU -->
+            <a href="index.html" class="back-link back-link-final"><i class="fas fa-arrow-left me-2"></i> SAYILAR DİYARINA DÖN</a>
         </div>
     </div>
 
