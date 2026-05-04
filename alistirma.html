@@ -12,7 +12,6 @@
         :root { --main-cyan: #00e5ff; --main-purple: #b100ff; --dark-bg: #050508; --error-red: #ff3333; --neon-pink: #ff0055; }
         body { background-color: var(--dark-bg); color: #fff; font-family: 'Poppins', sans-serif; min-height: 100vh; overflow-x: hidden; }
         
-        /* Geçiş Efekti */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--dark-bg); z-index: 9999; display: flex;
@@ -25,14 +24,12 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Sol Panel */
         .input-section { 
             height: 100vh; display: flex; flex-direction: column; justify-content: center; 
             align-items: center; border-right: 1px solid rgba(255,255,255,0.1); 
             position: fixed; width: 40%; background: linear-gradient(135deg, #050508 0%, #0a0a15 100%);
         }
         
-        /* Geliştirilmiş Geri Dön Butonu */
         .back-link {
             position: absolute; top: 40px; left: 40px; 
             color: #fff; text-decoration: none; font-family: 'Orbitron', sans-serif;
@@ -63,7 +60,6 @@
         }
         .analyze-btn:hover { transform: translateY(-3px); box-shadow: 0 0 40px var(--main-cyan); }
 
-        /* Oyun Geçiş Butonu */
         .game-link {
             margin-top: 20px; width: 75%; text-decoration: none;
             border: 2px solid var(--neon-pink); color: var(--neon-pink);
@@ -76,7 +72,6 @@
             box-shadow: 0 0 25px var(--neon-pink); transform: translateY(-2px);
         }
 
-        /* Sağ Panel */
         .results-section { margin-left: 40%; padding: 60px; height: 100vh; overflow-y: auto; }
         .result-card { 
             border-radius: 15px; padding: 35px; margin-bottom: 30px; 
@@ -93,7 +88,6 @@
         .neon-title { font-family: 'Orbitron', sans-serif; font-weight: bold; letter-spacing: 2px; }
         .sub-text { color: #aaa; font-style: italic; font-size: 0.95rem; display: block; margin-bottom: 15px; }
 
-        /* MOBİL UYUMLULUK */
         @media (max-width: 768px) {
             body { overflow-y: auto; }
             .input-section { position: relative; width: 100%; height: auto; min-height: 50vh; padding: 80px 20px 40px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -116,9 +110,10 @@
         
         <h2 class="neon-title mb-4" style="color: var(--main-cyan);">SAYI ANALİZİ</h2>
         
+        <!-- Sadece rakam girişi ve 8 karakter sınırı -->
         <input type="number" id="numInput" class="number-input" placeholder="---" 
                oninput="handleInput()" 
-               onkeydown="return event.keyCode !== 190 && event.keyCode !== 110 && event.keyCode !== 188 && event.keyCode !== 107 && event.keyCode !== 109">
+               onkeydown="handleKeyDown(event)">
         
         <p id="helperText" class="text-secondary mt-4">Analiz edilecek bir tam sayı girin...</p>
         
@@ -173,13 +168,31 @@
             }, 1200);
         }
 
+        // Klavye kontrolü: Harf engelleme ve Enter desteği
+        function handleKeyDown(e) {
+            // İzin verilen tuşlar: Backspace, Delete, Tab, Escape, Enter ve Sayılar
+            const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight'];
+            
+            // Enter tuşu kontrolü
+            if (e.key === 'Enter') {
+                analyzeNumber();
+                return;
+            }
+
+            // Sayı tuşları dışındakileri ve e, +, -, . gibi özel durumları engelle
+            if (!allowedKeys.includes(e.key) && (e.key < '0' || e.key > '9')) {
+                e.preventDefault();
+            }
+        }
+
         function handleInput() {
             const input = document.getElementById('numInput');
             const btn = document.getElementById('testBtn');
             const helper = document.getElementById('helperText');
 
-            if (input.value.includes('.') || input.value.includes(',')) {
-                input.value = input.value.replace(/[.,]/g, "");
+            // 8 Karakter sınırı
+            if (input.value.length > 8) {
+                input.value = input.value.slice(0, 8);
             }
 
             if (input.value !== "") {
@@ -189,14 +202,21 @@
                 helper.style.display = 'block';
                 btn.style.display = 'none';
             }
+            // Yeni sayı girildiğinde eski sonuçları gizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
         }
 
         function analyzeNumber() {
-            const num = parseInt(document.getElementById('numInput').value);
+            const inputVal = document.getElementById('numInput').value;
+            if (inputVal === "") return;
+
+            const num = parseInt(inputVal);
             let found = false;
+            
+            // Tüm kartları gizle
             document.querySelectorAll('.result-card').forEach(c => c.style.display = 'none');
 
+            // Özel sayı kontrolleri
             if (isPrime(num)) { showCard('card-asal'); found = true; }
             if (isArmstrong(num)) { showCard('card-armstrong'); found = true; }
             if (isPerfect(num)) { showCard('card-mukemmel'); found = true; }
@@ -208,10 +228,12 @@
         function showCard(id) {
             const card = document.getElementById(id);
             card.style.display = 'block';
+            // Animasyonu tetiklemek için class yenileme
             card.classList.remove('aos-animate');
             setTimeout(() => card.classList.add('aos-animate'), 50);
         }
 
+        // Matematiksel algoritmalar
         const isPrime = n => {
             if (n < 2) return false;
             for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
